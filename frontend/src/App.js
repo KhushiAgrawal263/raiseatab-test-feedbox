@@ -1,18 +1,24 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Routes, Route } from "react-router-dom";
+import TemplateOverview from './components/TemplateOverview';
+import PricingPage from './components/PricingPage';
+import NavBar from './components/NavBar/NavBar.js';
+import Home_Page from './components/Home_Page/Home_Page';
 import InvoicePage from './components/InvoicePage';
 
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-      <Routes>
-      <Route path='/invoice' element={<InvoicePage />}></Route>
-      </Routes>
-      </BrowserRouter>
-    </div>
-  );
+    <div>
+       <NavBar/>
+        <Routes>
+          <Route path="/" element={<Home_Page />} />
+          <Route path="/templateOverview" element={<TemplateOverview />} />
+          <Route path="/pricingPage" element={<PricingPage />} />
+          <Route path="/invoicePage" element={<InvoicePage />} />
+        </Routes>
+        </div>
+        )
 }
 
 export default App;
