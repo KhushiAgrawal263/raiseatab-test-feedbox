@@ -1,10 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import InvoicePage from './components/InvoicePage';
+
 
 function App() {
   return (
     <div className="App">
-      <h1 className='bg-red-400'>hello world</h1>
+      <BrowserRouter>
+      <Routes>
+      <Route path='/invoice' element={<InvoicePage />}></Route>
+      </Routes>
+      </BrowserRouter>
     </div>
   );
 }
