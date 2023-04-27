@@ -8,6 +8,7 @@ import Home_Page from "./components/Home_Page/Home_Page";
 function App() {
   return (
     <div>
+      
       <NavBar />
       <Routes>
         <Route path="/" element={<Home_Page />} />
