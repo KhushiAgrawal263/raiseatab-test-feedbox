@@ -7,18 +7,24 @@ import Home_Page from './components/Home_Page/Home_Page';
 import InvoicePage from './components/InvoicePage';
 
 
+import Login from './Components/Login_Page/Login';
+import Register from './Components/Register_Page/Register';
+
 function App() {
   return (
     <div>
-       <NavBar/>
-        <Routes>
-          <Route path="/" element={<Home_Page />} />
-          <Route path="/templateOverview" element={<TemplateOverview />} />
-          <Route path="/pricingPage" element={<PricingPage />} />
-          <Route path="/invoicePage" element={<InvoicePage />} />
-        </Routes>
-        </div>
-        )
+      
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home_Page />} />
+        <Route path="/templateOverview" element={<TemplateOverview />} />
+        <Route path="/pricingPage" element={<PricingPage />} />
+        <Route path="/login" element={<Login/>}></Route>
+        <Route path="/register" element={<Register/>}></Route>
+        <Route path="/invoicePage" element={<InvoicePage />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;
