@@ -1,16 +1,15 @@
-import "./App.css";
+import './App.css';
 import { Routes, Route } from "react-router-dom";
-// import TemplateOverview from "./components/TemplateOverview";
-import TemplateOverview from "./Components/TemplateOverview"
-import PricingPage from "./Components/PricingPage"
-import NavBar from "./Components/NavBar/NavBar"
+import TemplateOverview from './components/TemplateOverview';
+import PricingPage from './components/PricingPage';
+import NavBar from './components/NavBar/NavBar.js';
+import Home_Page from './components/Home_Page/Home_Page';
+import InvoicePage from './components/InvoicePage';
 
 
-import Home_Page from "./Components/Home_Page/Home_Page";
-import Login from './Components/Login_Page/Login';
-import Register from './Components/Register_Page/Register';
-import Profile from "./Components/Profile_Page/Profile"
-
+import Login from './components/Login_Page/Login';
+import Register from './components/Register_Page/Register';
+import Profile from "./components/Profile_Page/Profile"
 function App() {
   return (
     <div className="app">
@@ -23,6 +22,7 @@ function App() {
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/register" element={<Register/>}></Route>
         <Route path="/profile" element={<Profile/>}></Route>
+        <Route path="/invoicePage" element={<InvoicePage />} />
       </Routes>
     </div>
   );
