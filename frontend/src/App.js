@@ -13,7 +13,6 @@ import Profile from "./components/Profile_Page/Profile"
 function App() {
   return (
     <div className="app">
-      
       <NavBar />
       <Routes>
         <Route path="/" element={<Home_Page />} />
