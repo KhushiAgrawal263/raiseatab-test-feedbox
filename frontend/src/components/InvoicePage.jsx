@@ -176,31 +176,31 @@ function InvoicePage() {
           </div>
 
 
-          <div className="flex flex-col gap-3 w-[85%] ">
-          <div className="flex justify-between w-[40%]">
+          <div className="flex flex-col gap-3 w-[100%]">
+          <div className="flex justify-between w-[100%] pr-[180px]">
             <label className="mt-1">Invoice id:</label>
             <input
               type="text"
-              placeholder="Name"
-              className="w-[35.5%] p-1 rounded-md"
+              placeholder="#"
+              className="w-[60%] p-1 rounded-md"
             />
             </div>
             
-            <div className="flex justify-between w-[40%] ">
+            <div className="flex justify-between  w-[100%] pr-[180px]">
             <label className="mt-1">Invoice date:</label>
             <input
-              type="text"
+              type="date"
               placeholder="Name"
-              className="w-[35.5%] p-1 rounded-md"
+              className="w-[60%] p-1 rounded-md"
             />
             </div>
 
-            <div className="flex justify-between w-[40%]">
+            <div className="flex justify-between  w-[100%] pr-[180px]">
             <label className="mt-1">Due date:</label>
             <input
-              type="text"
+              type="date"
               placeholder="Name"
-              className="w-[35.5%] p-1 rounded-md"
+              className="w-[60%] p-1 rounded-md"
             />
             </div>
 
