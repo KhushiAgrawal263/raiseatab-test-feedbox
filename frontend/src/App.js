@@ -5,10 +5,8 @@ import PricingPage from './components/PricingPage';
 import NavBar from './components/NavBar/NavBar.js';
 import Home_Page from './components/Home_Page/Home_Page';
 import InvoicePage from './components/InvoicePage';
-
-
-import Login from './Components/Login_Page/Login';
-import Register from './Components/Register_Page/Register';
+import Login from './components/Login_Page/Login';
+import Register from './components/Register_Page/Register'
 
 function App() {
   return (

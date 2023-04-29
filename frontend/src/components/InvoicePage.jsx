@@ -20,10 +20,10 @@ function InvoicePage() {
     setImage(!image);
   }
 
-  const crossImage=()=>{
+  const crossImage = () => {
     setImage(false);
     setImgg("");
-  }
+  };
 
   const handleAddRow = () => {
     const newRow = {
@@ -56,14 +56,22 @@ function InvoicePage() {
           <div className="flex flex-col p-5 ml-[40px] mt-[30px] gap-3 w-[100%] ">
             {image ? (
               <div>
-                <MdCancel
+                <div
+                  onClick={crossImage}
+                  className="flex text-[20px] text-black  z-50 hover:text-gray-400  cursor-pointer ml-[136px] relative top-[-20px] "
+                >
+                  <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                {/* <MdCancel
                         onClick={crossImage}
-                        size="20"
-                        className="flex text-black  z-50 hover:text-gray-600  cursor-pointer ml-[136px] relative top-[-20px] "
-                          />
-                <img className="w-[150px] h-[150px] -mt-[35px] object-cover"
+                        size="22"
+                        className="flex text-gray-800  z-50 hover:text-gray-400  cursor-pointer ml-[136px] relative top-[-20px] "
+                          /> */}
+                <img
+                  className="w-[150px] h-[150px] -mt-[35px] object-cover"
                   src={file}
-                  alt=""/>
+                  alt=""
+                />
               </div>
             ) : (
               <div className="flex text-sm text-gray-600">
@@ -106,13 +114,7 @@ function InvoicePage() {
               placeholder="City,State Zip"
             />
 
-            {/* <label id="lastName-label" htmlFor="country">
-              Country
-            </label> */}
-            <div
-              id="countryFlag"
-              className="flex item-center w-[70%]"
-            >
+            <div id="countryFlag" className="flex item-center w-[70%]">
               <div className="red w-[100%]">
                 <Select
                   className="w-[65%]"
@@ -126,6 +128,82 @@ function InvoicePage() {
           </div>
           <div className="pr-[100px]  text-[35px] font-[600] mt-[60px]">
             INVOICE
+          </div>
+        </div>
+        <br/><br/>
+        <div className="flex ml-[60px] w-[100%] justify-between">
+          <div className="flex flex-col gap-3 w-[85%] ">
+            <div className="flex gap-1 ">
+            <label className="mt-1">Bill To:</label>
+            <input
+              type="text"
+              placeholder="Name"
+              className="w-[35.5%] p-1 rounded-md"
+            />
+            </div>
+            <input
+              className="w-[45%] p-1 rounded-md"
+              type="text"
+              placeholder="Your Client's Name"
+            />
+            <input
+              className="w-[45%] p-1 rounded-md"
+              type="text"
+              placeholder="Client's Address"
+            />
+            <input
+              className="w-[45%] p-1 rounded-md"
+              type="text"
+              placeholder="Company's Address"
+            />
+            <input
+              className="w-[45%] p-1 rounded-md"
+              type="text"
+              placeholder="City,State Zip"
+            />
+
+            <div id="countryFlag" className="flex item-center w-[70%]">
+              <div className="red w-[100%]">
+                <Select
+                  className="w-[65%]"
+                  isSearchable={true}
+                  options={options}
+                  //   value={value}
+                  //   onChange={()=>changeHandler}
+                />
+              </div>
+            </div>
+          </div>
+
+
+          <div className="flex flex-col gap-3 w-[85%] ">
+          <div className="flex justify-between w-[40%]">
+            <label className="mt-1">Invoice id:</label>
+            <input
+              type="text"
+              placeholder="Name"
+              className="w-[35.5%] p-1 rounded-md"
+            />
+            </div>
+            
+            <div className="flex justify-between w-[40%] ">
+            <label className="mt-1">Invoice date:</label>
+            <input
+              type="text"
+              placeholder="Name"
+              className="w-[35.5%] p-1 rounded-md"
+            />
+            </div>
+
+            <div className="flex justify-between w-[40%]">
+            <label className="mt-1">Due date:</label>
+            <input
+              type="text"
+              placeholder="Name"
+              className="w-[35.5%] p-1 rounded-md"
+            />
+            </div>
+
           </div>
         </div>
 
@@ -188,7 +266,10 @@ function InvoicePage() {
         </div>
 
         <div className="mt-5 ml-[60px]">
-          <div onClick={handleAddRow} className="flex cursor-pointer gap-2 hover:text-gray-500">
+          <div
+            onClick={handleAddRow}
+            className="flex cursor-pointer gap-2 hover:text-gray-500"
+          >
             <AiFillPlusCircle size="22" style={{ marginTop: "1px" }} />
             Add Items
           </div>
@@ -211,8 +292,12 @@ function InvoicePage() {
         </div>
 
         <div className="ml-[60px] pb-5 flex gap-3">
-            <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">Generate Invoice</button>
-            <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">Save Draft</button>
+          <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
+            Generate Invoice
+          </button>
+          <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
+            Save Draft
+          </button>
         </div>
       </div>
     </div>
