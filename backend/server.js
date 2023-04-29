@@ -6,24 +6,9 @@ const app = express();
 
 const userController = require("./router/user")
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-
-// [Personal Name]
-// [Logo]
-// [Your Company Name]
-// [Your Company Address]
-// [Company GST No.]
-// [Company PAN No.]
-// [City, State, ZIP Code]
-// [Phone Number]
-// [Email Address]
-// [Website URL]
-// [Your Company's Bank Account Information] -:
-// Bank name, Acc. No., IFSC Code, Branch
-// Password
-
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Add new user
 app.use('/',userController);
