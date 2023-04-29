@@ -7,12 +7,12 @@ import Home_Page from './components/Home_Page/Home_Page';
 import InvoicePage from './components/InvoicePage';
 
 
-import Login from './Components/Login_Page/Login';
-import Register from './Components/Register_Page/Register';
-
+import Login from './components/Login_Page/Login';
+import Register from './components/Register_Page/Register';
+import Profile from "./components/Profile_Page/Profile"
 function App() {
   return (
-    <div>
+    <div className="app">
       <NavBar />
       <Routes>
         <Route path="/" element={<Home_Page />} />
@@ -20,6 +20,7 @@ function App() {
         <Route path="/pricingPage" element={<PricingPage />} />
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/register" element={<Register/>}></Route>
+        <Route path="/profile" element={<Profile/>}></Route>
         <Route path="/invoicePage" element={<InvoicePage />} />
       </Routes>
     </div>
