@@ -5,8 +5,11 @@ import { AiFillPlusCircle } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function InvoicePage() {
+  const location = useLocation();
+  console.log(location);
   const [options, setOptions] = useState(countryList().getData());
   const [state, setState] = useState("");
   const [value, setValue] = useState("");
@@ -63,11 +66,6 @@ function InvoicePage() {
                 >
                   <i class="fa-solid fa-circle-xmark"></i>
                 </div>
-                {/* <MdCancel
-                        onClick={crossImage}
-                        size="22"
-                        className="flex text-gray-800  z-50 hover:text-gray-400  cursor-pointer ml-[136px] relative top-[-20px] "
-                          /> */}
                 <img
                   className="w-[150px] h-[150px] -mt-[35px] object-cover"
                   src={file}
@@ -94,11 +92,13 @@ function InvoicePage() {
               </div>
             )}
 
+{/* location.state && location.state.name==='mentoring' */}
+
             <input
-              className="w-[45%] p-1 rounded-md"
-              type="text"
-              placeholder="Your Company Name"
-            />
+            className="w-[45%] p-1 rounded-md"
+            type="text"
+            placeholder="Your Company Name"
+          />
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
@@ -227,7 +227,12 @@ function InvoicePage() {
             <thead className="dark:bg-gray-900 text-gray-300 font-[100]">
               <tr>
                 <th className="text-left p-2">Description</th>
-                <th className="text-left">Quantity</th>
+                {
+                  location.state && location.state.name==='technical' ?
+                  <th className="text-left">Hours</th>  
+                  :
+                  <th className="text-left">Quantity</th>
+                }
                 <th className="text-left">Rate</th>
                 <th className="text-left">Amount</th>
               </tr>
@@ -250,9 +255,8 @@ function InvoicePage() {
                       type="number"
                       className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-      invalid:border-pink-500 invalid:text-pink-600
-      focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
-                      placeholder="Quantity"
+     focus:bg-gray-200 rounded-sm"
+                      placeholder={location.state && location.state.name==='technical' ? "Hours":"Quantity"}
                     />
                   </td>
                   <td className="p-2">
@@ -338,13 +342,32 @@ function InvoicePage() {
             contact information provided above.
           </div>
           <div className="mt-4">Sincerely,</div>
+          <div className="mt-4 flex flex-col">
           <input type="text" placeholder="Your Name"
-          className=" w-[25%] mt-3 mb-5 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+          className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
           disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
           invalid:border-pink-500 invalid:text-pink-600
           focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
-        //   className="w-[25%] mt-3 mb-5 p-2 rounded-md"
           />
+          {
+            location.state && location.state.name==='technical' ?
+            <input type="text" placeholder="Your Title"
+          className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          invalid:border-pink-500 invalid:text-pink-600
+          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
+          />:""
+          }
+          {
+            location.state && location.state.name==='technical' ?
+            <input type="text" placeholder="Your Company"
+          className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          invalid:border-pink-500 invalid:text-pink-600
+          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
+          />:""
+          }
+          </div>
         </div>
 
         <div className="ml-[60px] pb-5 flex gap-3">
