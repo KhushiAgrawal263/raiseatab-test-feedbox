@@ -8,12 +8,38 @@ import { Link } from "react-router-dom";
 
 function InvoicePage() {
   const [options, setOptions] = useState(countryList().getData());
-  const [state, setState] = useState("");
   const [value, setValue] = useState("");
+
   const [imgg, setImgg] = useState();
   const [file, setFile] = useState("");
   const [rows, setRows] = useState([]);
   const [image, setImage] = useState(false);
+
+  const [invoiceNo, setInvoiceNo] = useState(false);
+  const [invoiceDate, setInvoiceDate] = useState(false);
+  const [invoiceTotal, setInvoiceTotal] = useState(false);
+  const [comp_name, setComp_name] = useState(false);
+  const [compAdd, setComp_add] = useState(false);
+  const [city, setCity] = useState(false);
+  const [state, setState] = useState(false);
+  const [zip, setzip] = useState(false);
+  const [contactNo, setContactNo] = useState(false);
+  const [comp_email, setComp_email] = useState(false);
+  const [country, setCountry] = useState(false);
+  const [client_name, setClient_name] = useState(false);
+  const [client_comp_name, setClient_comp_name] = useState(false);
+  const [clientAdd, setClient_add] = useState(false);
+  const [client_comp_add, setClient_comp_add] = useState(false);
+  const [client_city, setClient_city] = useState(false);
+  const [client_state, setClient_state] = useState(false);
+  const [client_zip, setClient_zip] = useState(false);
+  const [client_contact_no, setClient_contact_no] = useState(false);
+  const [client_email, setClient_email] = useState(false);
+  const [client_country, setClient_country] = useState(false);
+  const [subTotal, setSubTotal] = useState(false);
+  const [tax, setTax] = useState(false);
+  const [total, setTotal] = useState(false);
+  const [dueDate, setDueDate] = useState(false);
 
   function handleChange(e) {
     setFile(URL.createObjectURL(e.target.files[0]));
@@ -47,6 +73,10 @@ function InvoicePage() {
     setRows(newRows);
   };
 
+  const handleSaveDraft = () => {
+    console.log(imgg);
+  };
+
   return (
     <div className="dark:bg-gray-900 pb-[50px]">
       <div className="text-white text-center p-6 font-[700] text-[27px] text-gray-300">
@@ -63,11 +93,6 @@ function InvoicePage() {
                 >
                   <i class="fa-solid fa-circle-xmark"></i>
                 </div>
-                {/* <MdCancel
-                        onClick={crossImage}
-                        size="22"
-                        className="flex text-gray-800  z-50 hover:text-gray-400  cursor-pointer ml-[136px] relative top-[-20px] "
-                          /> */}
                 <img
                   className="w-[150px] h-[150px] -mt-[35px] object-cover"
                   src={file}
@@ -98,26 +123,43 @@ function InvoicePage() {
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="Your Company Name"
+              onChange={(e) => setComp_name(e.target.value)}
             />
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="Company's Address"
+              onChange={(e) => setComp_add(e.target.value)}
             />
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
-              placeholder="City,State Zip"
+              placeholder="City"
+              onChange={(e) => setCity(e.target.value)}
+            />
+            <input
+              className="w-[45%] p-1 rounded-md"
+              type="text"
+              placeholder="State"
+              onChange={(e) => setState(e.target.value)}
+            />
+            <input
+              className="w-[45%] p-1 rounded-md"
+              type="text"
+              placeholder="ZipCode"
+              onChange={(e) => setzip(e.target.value)}
             />
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="Contact Number"
+              onChange={(e) => setContactNo(e.target.value)}
             />
             <input
               className="w-[45%] p-1 rounded-md"
               type="email"
               placeholder="Your Company's Email Id"
+              onChange={(e) => setComp_email(e.target.value)}
             />
 
             <div id="countryFlag" className="flex item-center w-[70%]">
@@ -127,7 +169,7 @@ function InvoicePage() {
                   isSearchable={true}
                   options={options}
                   //   value={value}
-                  //   onChange={()=>changeHandler}
+                  onChange={(e) => setCountry(e.target.value)}
                 />
               </div>
             </div>
@@ -146,37 +188,56 @@ function InvoicePage() {
                 type="text"
                 placeholder="Client Name"
                 className="w-[50%] p-1 rounded-md"
+                onChange={(e) => setClient_name(e.target.value)}
               />
             </div>
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
               placeholder="Client Company Name"
+              onChange={(e) => setClient_comp_name(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
               placeholder="Client's Address"
+              onChange={(e) => setClient_add(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
               placeholder="Company's Address"
+              onChange={(e) => setClient_comp_add(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
-              placeholder="City,State Zip"
+              placeholder="City"
+              onChange={(e) => setClient_city(e.target.value)}
+            />
+            <input
+              className="w-[63%] p-1 rounded-md"
+              type="text"
+              placeholder="State"
+              onChange={(e) => setClient_state(e.target.value)}
+            />
+            <input
+              className="w-[63%] p-1 rounded-md"
+              type="text"
+              placeholder="ZipCode"
+              onChange={(e) => setClient_zip(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
               placeholder="Contact Number"
+              onChange={(e) => setClient_contact_no(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="email"
-              placeholder="Your Company's Email Id"
+              placeholder="Client's Email Id"
+              onChange={(e) => setClient_email(e.target.value)}
             />
 
             <div id="countryFlag" className="flex item-center w-[70%]">
@@ -186,7 +247,7 @@ function InvoicePage() {
                   isSearchable={true}
                   options={options}
                   //   value={value}
-                  //   onChange={()=>changeHandler}
+                  onChange={(e) => setClient_country(e.target.value)}
                 />
               </div>
             </div>
@@ -199,6 +260,7 @@ function InvoicePage() {
                 type="text"
                 placeholder="#"
                 className="w-[60%] p-1 rounded-md"
+                onChange={(e) => setInvoiceNo(e.target.value)}
               />
             </div>
 
@@ -208,6 +270,7 @@ function InvoicePage() {
                 type="date"
                 placeholder="Name"
                 className="w-[60%] p-1 rounded-md"
+                onChange={(e) => setInvoiceDate(e.target.value)}
               />
             </div>
 
@@ -217,6 +280,7 @@ function InvoicePage() {
                 type="number"
                 placeholder="Total"
                 className="w-[60%] p-1 rounded-md"
+                onChange={(e) => setInvoiceTotal(e.target.value)}
               />
             </div>
           </div>
@@ -238,7 +302,7 @@ function InvoicePage() {
                   <td className="p-2">
                     <textarea
                       placeholder="Enter Item Name"
-                      className=" bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+                      className=" bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       invalid:border-pink-500 invalid:text-pink-600
       focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 pl-2 rounded-sm"
@@ -248,7 +312,7 @@ function InvoicePage() {
                   <td className="p-2">
                     <input
                       type="number"
-                      className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+                      className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       invalid:border-pink-500 invalid:text-pink-600
       focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
@@ -258,7 +322,7 @@ function InvoicePage() {
                   <td className="p-2">
                     <input
                       type="number"
-                      className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+                      className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       invalid:border-pink-500 invalid:text-pink-600
       focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm
@@ -328,22 +392,28 @@ function InvoicePage() {
             </div>
           </div>
 
-         <div className="flex mt-5 gap-2">
-         <div className="font-bold">Please make payment to the following bank account:</div>
-          <Link to="/" className="underline">Link to account</Link>
-         </div>
+          <div className="flex mt-5 gap-2">
+            <div className="font-bold">
+              Please make payment to the following bank account:
+            </div>
+            <Link to="/" className="underline">
+              Link to account
+            </Link>
+          </div>
           <div className="mt-5 w-[90%] pb-5">
             Thank you for your business! If you have any questions or concerns
             about this invoice, please do not hesitate to contact us at the
             contact information provided above.
           </div>
           <div className="mt-4">Sincerely,</div>
-          <input type="text" placeholder="Your Name"
-          className=" w-[25%] mt-3 mb-5 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+          <input
+            type="text"
+            placeholder="Your Name"
+            className=" w-[25%] mt-3 mb-5 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
           disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
           invalid:border-pink-500 invalid:text-pink-600
           focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
-        //   className="w-[25%] mt-3 mb-5 p-2 rounded-md"
+            //   className="w-[25%] mt-3 mb-5 p-2 rounded-md"
           />
         </div>
 
@@ -351,7 +421,10 @@ function InvoicePage() {
           <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
             Generate Invoice
           </button>
-          <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
+          <button
+            className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]"
+            onClick={handleSaveDraft}
+          >
             Save Draft
           </button>
         </div>

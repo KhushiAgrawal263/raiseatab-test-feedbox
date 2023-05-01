@@ -100,8 +100,8 @@ router.get("/getUser", verifyToken, (req, res) => {
 });
 
 // Generate invoice and save as draft
-router.post("/register", upload.single("logo"), async (req, res) => {
-  
+router.post("set/invoice/draft", upload.single("logo"), async (req, res) => {
+
 });
 
 module.exports = router;
