@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import {Link} from "react-router-dom"
 function Register() {
   const url = process.env.REACT_APP_URL;
   const [logo, setLogo] = useState(
@@ -218,6 +218,11 @@ function Register() {
                     Save
                   </button>
                 </div>
+
+                <div className="text-white mt-4">
+                Already have an account ? 
+                <Link to="/login" className="ml-2" style={{color:'#2563eb'}}>Login</Link>
+          </div>
               </div>
             </div>
           </div>
