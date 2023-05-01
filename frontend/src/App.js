@@ -2,7 +2,7 @@ import './App.css';
 import { Routes, Route } from "react-router-dom";
 import TemplateOverview from './components/TemplateOverview';
 import PricingPage from './components/PricingPage';
-import NavBar from './components/NavBar/NavBar.js';
+import NavBar from './components/NavBar/NavBar';
 import Home_Page from './components/Home_Page/Home_Page';
 import InvoicePage from './components/InvoicePage';
 
