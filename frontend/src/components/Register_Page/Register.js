@@ -26,7 +26,6 @@ function Register() {
     ) {
       alert("All input fields are required");
     } else {
-      console.log(logo);
       const formData = new FormData();
       formData.append("logo", logo);
       formData.append("name", name);
@@ -41,6 +40,11 @@ function Register() {
         method: "POST",
         body: formData,
       });
+      const res = await data.json();
+      if(res){
+        alert(res);
+        window.location.href="/login"
+      }
     }
   };
 
