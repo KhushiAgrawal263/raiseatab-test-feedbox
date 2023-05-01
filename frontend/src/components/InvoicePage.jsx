@@ -4,6 +4,7 @@ import Select from "react-select";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import { ImCross } from "react-icons/im";
+import { Link } from "react-router-dom";
 
 function InvoicePage() {
   const [options, setOptions] = useState(countryList().getData());
@@ -96,12 +97,7 @@ function InvoicePage() {
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
-              placeholder="Your Company"
-            />
-            <input
-              className="w-[45%] p-1 rounded-md"
-              type="text"
-              placeholder="Your Name"
+              placeholder="Your Company Name"
             />
             <input
               className="w-[45%] p-1 rounded-md"
@@ -112,6 +108,16 @@ function InvoicePage() {
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="City,State Zip"
+            />
+            <input
+              className="w-[45%] p-1 rounded-md"
+              type="text"
+              placeholder="Contact Number"
+            />
+            <input
+              className="w-[45%] p-1 rounded-md"
+              type="email"
+              placeholder="Your Company's Email Id"
             />
 
             <div id="countryFlag" className="flex item-center w-[70%]">
@@ -130,36 +136,47 @@ function InvoicePage() {
             INVOICE
           </div>
         </div>
-        <br/><br/>
+        <br />
+        <br />
         <div className="flex ml-[60px] w-[100%] justify-between">
           <div className="flex flex-col gap-3 w-[85%] ">
             <div className="flex gap-1 ">
-            <label className="mt-1">Bill To:</label>
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-[35.5%] p-1 rounded-md"
-            />
+              <label className="mt-1">Bill To:</label>
+              <input
+                type="text"
+                placeholder="Client Name"
+                className="w-[50%] p-1 rounded-md"
+              />
             </div>
             <input
-              className="w-[45%] p-1 rounded-md"
+              className="w-[63%] p-1 rounded-md"
               type="text"
-              placeholder="Your Client's Name"
+              placeholder="Client Company Name"
             />
             <input
-              className="w-[45%] p-1 rounded-md"
+              className="w-[63%] p-1 rounded-md"
               type="text"
               placeholder="Client's Address"
             />
             <input
-              className="w-[45%] p-1 rounded-md"
+              className="w-[63%] p-1 rounded-md"
               type="text"
               placeholder="Company's Address"
             />
             <input
-              className="w-[45%] p-1 rounded-md"
+              className="w-[63%] p-1 rounded-md"
               type="text"
               placeholder="City,State Zip"
+            />
+            <input
+              className="w-[63%] p-1 rounded-md"
+              type="text"
+              placeholder="Contact Number"
+            />
+            <input
+              className="w-[63%] p-1 rounded-md"
+              type="email"
+              placeholder="Your Company's Email Id"
             />
 
             <div id="countryFlag" className="flex item-center w-[70%]">
@@ -175,35 +192,33 @@ function InvoicePage() {
             </div>
           </div>
 
-
-          <div className="flex flex-col gap-3 w-[85%] ">
-          <div className="flex justify-between w-[40%]">
-            <label className="mt-1">Invoice id:</label>
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-[35.5%] p-1 rounded-md"
-            />
-            </div>
-            
-            <div className="flex justify-between w-[40%] ">
-            <label className="mt-1">Invoice date:</label>
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-[35.5%] p-1 rounded-md"
-            />
+          <div className="flex flex-col gap-3 w-[100%]">
+            <div className="flex justify-between w-[100%] pr-[180px]">
+              <label className="mt-1">Invoice No. :</label>
+              <input
+                type="text"
+                placeholder="#"
+                className="w-[60%] p-1 rounded-md"
+              />
             </div>
 
-            <div className="flex justify-between w-[40%]">
-            <label className="mt-1">Due date:</label>
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-[35.5%] p-1 rounded-md"
-            />
+            <div className="flex justify-between  w-[100%] pr-[180px]">
+              <label className="mt-1">Invoice date:</label>
+              <input
+                type="date"
+                placeholder="Name"
+                className="w-[60%] p-1 rounded-md"
+              />
             </div>
 
+            <div className="flex justify-between  w-[100%] pr-[180px]">
+              <label className="mt-1">Invoice Total:</label>
+              <input
+                type="number"
+                placeholder="Total"
+                className="w-[60%] p-1 rounded-md"
+              />
+            </div>
           </div>
         </div>
 
@@ -211,10 +226,10 @@ function InvoicePage() {
           <table class="ml-[60px] mt-[30px] table-auto w-[88%] ">
             <thead className="dark:bg-gray-900 text-gray-300 font-[100]">
               <tr>
-                <th className="text-left p-2">Item Description</th>
+                <th className="text-left p-2">Description</th>
                 <th className="text-left">Quantity</th>
-                <th className="text-left">Price</th>
-                <th className="text-left">Sub Amount</th>
+                <th className="text-left">Rate</th>
+                <th className="text-left">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -276,19 +291,60 @@ function InvoicePage() {
         </div>
 
         <hr class="w-[88%] mt-4  ml-[60px] h-0.5 bg-gray-100 border-0 border-dashed rounded md:my-10 dark:bg-gray-300"></hr>
-        <div className="text-right mr-[45px] text-[18px] flex flex-col gap-2 pb-6">
+        <div className="text-right mr-[45px] text-[18px] flex flex-col gap-2">
           <div>
             <span className="text-left text-gray-400">Subtotal:</span>
             <span className="text-right ml-4 text-gray-500">200</span>{" "}
           </div>
           <div>
-            <span className="justify-left text-gray-400">Taxes: </span>
+            <span className="justify-left text-gray-400">Tax: </span>
             <span className="text-right ml-4 text-gray-500">10%</span>
           </div>
           <div>
             <span className="text-gray-500 text-gray-400">Total: </span>
             <span className="text-right ml-4 text-gray-500">200</span>
           </div>
+        </div>
+
+        <hr class="w-[88%] ml-[60px] h-0.5 bg-gray-100 border-0 border-dashed rounded md:my-10 dark:bg-gray-300"></hr>
+
+        <div className="flex flex-col ml-[60px]">
+          <div className="font-bold text-[18px]">Terms & Conditions</div>
+          <div className="mt-2 flex flex-col w-[400px] gap-3">
+            <div className="flex  justify-between">
+              <div>Payment Terms:</div>
+              <textarea
+                placeholder="Accepted Payment Terms"
+                className="pl-2 w-[230px] rounded-md"
+              />
+            </div>
+            <div className="flex">
+              <div>Due Date:</div>
+              <input
+                type="date"
+                placeholder="Name"
+                className="w-[35%] ml-[95px] p-1 rounded-md"
+              />
+            </div>
+          </div>
+
+         <div className="flex mt-5 gap-2">
+         <div className="font-bold">Please make payment to the following bank account:</div>
+          <Link to="/" className="underline">Link to account</Link>
+         </div>
+          <div className="mt-5 w-[90%] pb-5">
+            Thank you for your business! If you have any questions or concerns
+            about this invoice, please do not hesitate to contact us at the
+            contact information provided above.
+          </div>
+          <div className="mt-4">Sincerely,</div>
+          <input type="text" placeholder="Your Name"
+          className=" w-[25%] mt-3 mb-5 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          invalid:border-pink-500 invalid:text-pink-600
+          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
+        //   className="w-[25%] mt-3 mb-5 p-2 rounded-md"
+          />
         </div>
 
         <div className="ml-[60px] pb-5 flex gap-3">
