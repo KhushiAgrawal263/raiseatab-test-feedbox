@@ -6,9 +6,47 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { verifyToken } = require("./requireLogin");
 // const bcrypt = require('bcryptjs');
+const puppeteer = require('puppeteer');
+require('@babel/core');
+require('@babel/register')({
+  extensions: ['.js', '.jsx']
+});
 
 const upload = multer({});
 const { authenticateGoogle, uploadToGoogleDrive } = require("../driveConfig");
+// import InvoicePage from "../../frontend/src/components/InvoicePage.jsx";
+
+// router.post("/generate",async(req,res)=>{
+//   try{
+//   const browser = await puppeteer.launch();
+
+//   const page = await browser.newPage();
+
+//   await page.setContent(component);
+//   const pdf = await page.pdf({ format: 'A4' });
+//   await browser.close();
+//   return pdf;
+//   }
+//   catch (error) {
+//     res.status(500).json(error);
+//   }
+// })
+
+async function generatePdf(component) {
+  const browser = await puppeteer.launch();
+
+  const page = await browser.newPage();
+
+  await page.setContent(component);
+  const pdf = await page.pdf({ format: 'A4' });
+  await browser.close();
+  return pdf;
+
+}
+
+// const pdf = await generatePdf('<InvoicePage />');
+
+
 
 // Register a user
 router.post("/register", upload.single("logo"), async (req, res) => {

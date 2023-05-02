@@ -5,8 +5,11 @@ import { AiFillPlusCircle } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function InvoicePage() {
+  const location = useLocation();
+  console.log(location);
   const [options, setOptions] = useState(countryList().getData());
   const [value, setValue] = useState("");
 
@@ -80,7 +83,12 @@ function InvoicePage() {
   return (
     <div className="dark:bg-gray-900 pb-[50px]">
       <div className="text-white text-center p-6 font-[700] text-[27px] text-gray-300">
-        Mentoring Invoice
+       {location.state && location.state.name==='mentoring'?"Mentoring Invoice":""}
+       {location.state && location.state.name==='generic'?"Generic Consulting Invoice":""}
+       {location.state && location.state.name==='reference'?"Reference Introduction":""}
+       {location.state && location.state.name==='business'?"Business Development Fee Invoice":""}
+       {location.state && location.state.name==='technical'?"Technical Consultation":""}
+       {location.state && location.state.name==='basic'?"Basic Templates":""}
       </div>
       <div className="bg-gray-100 w-[60%] m-auto">
         <div className="flex">
@@ -118,13 +126,18 @@ function InvoicePage() {
                 </label>
               </div>
             )}
-
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="Your Company Name"
               onChange={(e) => setComp_name(e.target.value)}
             />
+
+            {/* location.state && location.state.name==='mentoring' */}
+          { location.state && location.state.name==='reference'
+          ?
+          "":
+          <div className="flex flex-col gap-3">
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
@@ -161,7 +174,6 @@ function InvoicePage() {
               placeholder="Your Company's Email Id"
               onChange={(e) => setComp_email(e.target.value)}
             />
-
             <div id="countryFlag" className="flex item-center w-[70%]">
               <div className="red w-[100%]">
                 <Select
@@ -173,6 +185,12 @@ function InvoicePage() {
                 />
               </div>
             </div>
+            </div>
+            
+          }
+            
+
+            
           </div>
           <div className="pr-[100px]  text-[35px] font-[600] mt-[60px]">
             INVOICE
@@ -291,7 +309,11 @@ function InvoicePage() {
             <thead className="dark:bg-gray-900 text-gray-300 font-[100]">
               <tr>
                 <th className="text-left p-2">Description</th>
-                <th className="text-left">Quantity</th>
+                {location.state && location.state.name === "technical" ? (
+                  <th className="text-left">Hours</th>
+                ) : (
+                  <th className="text-left">Quantity</th>
+                )}
                 <th className="text-left">Rate</th>
                 <th className="text-left">Amount</th>
               </tr>
@@ -314,9 +336,12 @@ function InvoicePage() {
                       type="number"
                       className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-      invalid:border-pink-500 invalid:text-pink-600
-      focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
-                      placeholder="Quantity"
+     focus:bg-gray-200 rounded-sm"
+                      placeholder={
+                        location.state && location.state.name === "technical"
+                          ? "Hours"
+                          : "Quantity"
+                      }
                     />
                   </td>
                   <td className="p-2">
@@ -324,8 +349,7 @@ function InvoicePage() {
                       type="number"
                       className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-      invalid:border-pink-500 invalid:text-pink-600
-      focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm
+      focus:bg-gray-200 rounded-sm
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="Price"
                     />
@@ -357,16 +381,37 @@ function InvoicePage() {
         <hr class="w-[88%] mt-4  ml-[60px] h-0.5 bg-gray-100 border-0 border-dashed rounded md:my-10 dark:bg-gray-300"></hr>
         <div className="text-right mr-[45px] text-[18px] flex flex-col gap-2">
           <div>
-            <span className="text-left text-gray-400">Subtotal:</span>
-            <span className="text-right ml-4 text-gray-500">200</span>{" "}
+            <span className="text-left text-gray-700 font-[700]">Subtotal:</span>
+            <input
+                      type="number"
+                      className="w-[10%] ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+      focus:bg-gray-200 rounded-sm
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="subtotal"
+                    />
           </div>
           <div>
-            <span className="justify-left text-gray-400">Tax: </span>
-            <span className="text-right ml-4 text-gray-500">10%</span>
+            <span className="justify-left text-gray-700 font-[700]">Tax: </span>
+            <input
+                      type="number"
+                      className="w-[10%] ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+      focus:bg-gray-200 rounded-sm
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="tax"
+                    />
           </div>
           <div>
-            <span className="text-gray-500 text-gray-400">Total: </span>
-            <span className="text-right ml-4 text-gray-500">200</span>
+            <span className="text-gray-500 text-gray-700 font-[700]">Total: </span>
+            <input
+                      type="number"
+                      className="w-[10%] ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+      focus:bg-gray-200 rounded-sm
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="total"
+                    />
           </div>
         </div>
 
@@ -415,20 +460,44 @@ function InvoicePage() {
           focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
             //   className="w-[25%] mt-3 mb-5 p-2 rounded-md"
           />
+          {location.state && location.state.name === "technical" || location.state.name === "business" ? (
+            <input
+              type="text"
+              placeholder="Your Title"
+              className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          invalid:border-pink-500 invalid:text-pink-600
+          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
+            />
+          ) : (
+            ""
+          )}
+          {location.state && location.state.name === "technical" || location.state.name === "business" || location.state.name === "generic" ? (
+            <input
+              type="text"
+              placeholder="Your Company"
+              className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          invalid:border-pink-500 invalid:text-pink-600
+          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
+            />
+          ) : (
+            ""
+          )}
         </div>
 
-        <div className="ml-[60px] pb-5 flex gap-3">
-          <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
-            Generate Invoice
-          </button>
-          <button
-            className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]"
-            onClick={handleSaveDraft}
-          >
-            Save Draft
-          </button>
-        </div>
+      <div className="ml-[60px] pb-5 flex gap-3">
+        <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
+          Generate Invoice
+        </button>
+        <button
+          className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]"
+          onClick={handleSaveDraft}
+        >
+          Save Draft
+        </button>
       </div>
+    </div>
     </div>
   );
 }
