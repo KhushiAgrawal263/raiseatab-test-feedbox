@@ -5,12 +5,6 @@ const multer = require("multer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { verifyToken } = require("./requireLogin");
-// const bcrypt = require('bcryptjs');
-const puppeteer = require('puppeteer');
-require('@babel/core');
-require('@babel/register')({
-  extensions: ['.js', '.jsx']
-});
 
 const upload = multer({});
 const { authenticateGoogle, uploadToGoogleDrive } = require("../driveConfig");
@@ -113,7 +107,7 @@ router.post("/login", (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
           const token = jwt.sign(
-            { userId: user.id },
+            { userId: user.user_id },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "2d" }
           );
@@ -127,9 +121,10 @@ router.post("/login", (req, res) => {
 });
 
 // Get Logged In user
-router.get("/getUser", verifyToken, (req, res) => {
+router.get("/getUser", verifyToken, async (req, res) => {
+  console.log(req.user.userId);
   const userId = req.user.userId;
-  const query = `SELECT * FROM users WHERE id = ${userId}`;
+  const query = `SELECT * FROM users WHERE user_id = ${userId}`;
 
   db.query(query, (err, result) => {
     if (err) throw err;
@@ -138,8 +133,52 @@ router.get("/getUser", verifyToken, (req, res) => {
 });
 
 // Generate invoice and save as draft
-router.post("set/invoice/draft", upload.single("logo"), async (req, res) => {
-
+router.post("/set/invoice/draft", verifyToken, async (req, res) => {
+  console.log(req.user);
+  try {
+    const val={
+      user_id : req.user.userId,
+      invoice_id: 1,
+      // invoice_date: 12-02-2023,
+      invoice_total: 900,
+      client_name: "anushka",
+      status:"draft"
+    }
+    console.log(...Object.keys(val));
+    const sqlInsert =
+        "INSERT INTO invoices (user_id,invoice_id,invoice_total,client_name,status) VALUES (?,?,?,?,?);";
+        db.query(
+          sqlInsert,
+          Object.values(val),
+          (err, result) => {
+            if (err) {
+              console.log(err, "err");
+              res.status(200).json(err);
+            } else {
+              console.log(result, "result");
+              res.status(200).json(result);
+            }
+          }
+        );
+  } catch (error) {
+    res.status(500).json(error)
+  }
 });
+
+// get drafts of a particular user
+router.get("/get/draft/invoices", verifyToken, async (req, res) => {
+  console.log(req.user.userId);
+  try {
+    const sqlInsert =
+        `select * from users JOIN invoices on users.user_id= invoices.user_id where invoices.user_id=${req.user.userId}`;
+        db.query(sqlInsert, (err, result) => {
+          if (err) throw err;
+          res.status(200).json(result);
+        });
+  } catch (error) {
+    res.status(500).json(error)
+  }
+});
+
 
 module.exports = router;
