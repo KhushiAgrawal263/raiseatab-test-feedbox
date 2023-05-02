@@ -26,7 +26,6 @@ const TemplateOverview = () => {
           </Link>
         </card>
 
-
         <card class="m-6 relative  h-[20rem] w-[25rem] rounded-lg hover:scale-105 transition-all  text-gray-900 bg-white  border shadow dark:border-gray-600  dark:bg-gray-800 dark:text-white">
           <Link to='/invoicePage' state={{name:"reference"}}>
           <img alt="" src={template} class="object-cover w-full h-full rounded-lg" />
@@ -62,10 +61,6 @@ const TemplateOverview = () => {
           </div>
           </Link>
         </card>
-
-       
-
-
 
       </div>
     </div>
