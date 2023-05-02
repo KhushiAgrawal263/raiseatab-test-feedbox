@@ -107,7 +107,7 @@ router.post("/login", (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
           const token = jwt.sign(
-            { userId: user.user_id },
+            { user: user },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "2d" }
           );
@@ -165,16 +165,39 @@ router.post("/set/invoice/draft", verifyToken, async (req, res) => {
   }
 });
 
+// generate invoices
+router.post("/create/invoice", verifyToken, async (req, res) => {
+  try {
+    console.log(req.user.user.name,req.body.name );
+    const name=req.body.name || req.user.user.name;
+    console.log(name);
+    const userquery="UPDATE users SET name = ? where user_id=?"
+    db.query(userquery, [name ,req.user.user.user_id],(err, result) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+  } catch (error) {
+    res.status(500).json(error)
+  }
+});
+
 // get drafts of a particular user
 router.get("/get/draft/invoices", verifyToken, async (req, res) => {
   console.log(req.user.userId);
   try {
-    const sqlInsert =
-        `select * from users JOIN invoices on users.user_id= invoices.user_id where invoices.user_id=${req.user.userId}`;
-        db.query(sqlInsert, (err, result) => {
-          if (err) throw err;
-          res.status(200).json(result);
-        });
+
+    const userquery=`UPDATE users SET name = ${req.body.name} where user_id=${req.user.userId}`
+    db.query(sqlInsert, (err, result) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+
+    // const sqlInsert =
+    //     `select * from users JOIN invoices on users.user_id= invoices.user_id where invoices.user_id=${req.user.userId}`;
+    //     db.query(sqlInsert, (err, result) => {
+    //       if (err) throw err;
+    //       res.status(200).json(result);
+    //     });
   } catch (error) {
     res.status(500).json(error)
   }

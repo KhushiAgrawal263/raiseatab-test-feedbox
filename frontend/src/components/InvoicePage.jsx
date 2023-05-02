@@ -57,6 +57,8 @@ function InvoicePage() {
       const res = await data.json();
       console.log(res[0]);
       setUser(res[0]);
+      setFile(`https://drive.google.com/uc?id=${res[0].logo}`)
+      setImage(true);
     };
     getUser();
   }, []);
@@ -115,24 +117,11 @@ function InvoicePage() {
           ? "Basic Templates"
           : ""}
       </div>
+      
       <div className="bg-gray-100 w-[60%] m-auto">
         <div className="flex">
           <div className="flex flex-col p-5 ml-[40px] mt-[30px] gap-3 w-[100%] ">
-            {user ? (
-              <div>
-                <div
-                  onClick={crossImage}
-                  className="flex text-[20px] text-black  z-50 hover:text-gray-400  cursor-pointer ml-[136px] relative top-[-20px] "
-                >
-                  <i class="fa-solid fa-circle-xmark"></i>
-                </div>
-                <img
-                  className="w-[150px] h-[150px] -mt-[35px] object-cover"
-                  src={`https://drive.google.com/uc?id=${user.logo}`}
-                  alt=""
-                />
-              </div>
-            ) : image ? (
+            { image ? (
               <div>
                 <div
                   onClick={crossImage}
