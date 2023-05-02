@@ -19,35 +19,41 @@ function InvoicePage() {
   const [image, setImage] = useState(false);
   const [user, setUser] = useState();
 
-  const [invoiceNo, setInvoiceNo] = useState(false);
-  const [invoiceDate, setInvoiceDate] = useState(false);
-  const [invoiceTotal, setInvoiceTotal] = useState(false);
-  const [comp_name, setComp_name] = useState(false);
-  const [compAdd, setComp_add] = useState(false);
-  const [city, setCity] = useState(false);
-  const [state, setState] = useState(false);
-  const [zip, setzip] = useState(false);
-  const [contactNo, setContactNo] = useState(false);
-  const [comp_email, setComp_email] = useState(false);
-  const [country, setCountry] = useState(false);
-  const [client_name, setClient_name] = useState(false);
-  const [client_comp_name, setClient_comp_name] = useState(false);
-  const [clientAdd, setClient_add] = useState(false);
-  const [client_comp_add, setClient_comp_add] = useState(false);
-  const [client_city, setClient_city] = useState(false);
-  const [client_state, setClient_state] = useState(false);
-  const [client_zip, setClient_zip] = useState(false);
-  const [client_contact_no, setClient_contact_no] = useState(false);
-  const [client_email, setClient_email] = useState(false);
-  const [client_country, setClient_country] = useState(false);
-  const [subTotal, setSubTotal] = useState(false);
-  const [tax, setTax] = useState(false);
-  const [total, setTotal] = useState(false);
-  const [dueDate, setDueDate] = useState(false);
+  const [invoiceNo, setInvoiceNo] = useState("");
+  const [invoiceDate, setInvoiceDate] = useState("");
+  const [invoiceTotal, setInvoiceTotal] = useState("");
+  const [comp_name, setComp_name] = useState("");
+  const [compAdd, setComp_add] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setzip] = useState("");
+  const [contactNo, setContactNo] = useState("");
+  const [comp_email, setComp_email] = useState("");
+  const [country, setCountry] = useState("");
+  const [client_name, setClient_name] = useState("");
+  const [client_comp_name, setClient_comp_name] = useState("");
+  const [clientAdd, setClient_add] = useState("");
+  const [client_comp_add, setClient_comp_add] = useState("");
+  const [client_city, setClient_city] = useState("");
+  const [client_state, setClient_state] = useState("");
+  const [client_zip, setClient_zip] = useState("");
+  const [client_contact_no, setClient_contact_no] = useState("");
+  const [client_email, setClient_email] = useState("");
+  const [client_country, setClient_country] = useState("");
+  const [subTotal, setSubTotal] = useState("");
+  const [tax, setTax] = useState("");
+  const [total, setTotal] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   const jwt = localStorage.getItem("invoiceJWT");
 
   useEffect(() => {
+    if(comp_name || compAdd || city)
+    {
+       setComp_name(comp_name);
+       setComp_add(compAdd);
+       setCity(city);
+    }
     const getUser = async () => {
       const data = await fetch(`${process.env.REACT_APP_URL}/getUser`, {
         headers: {
@@ -58,10 +64,11 @@ function InvoicePage() {
       console.log(res[0]);
       setUser(res[0]);
       setFile(`https://drive.google.com/uc?id=${res[0].logo}`)
+      setComp_name(comp_name===""?res[0].comp_name:comp_name);
       setImage(true);
     };
     getUser();
-  }, []);
+  }, [compAdd,comp_name,city]);
 
   function handleChange(e) {
     setFile(URL.createObjectURL(e.target.files[0]));
@@ -158,6 +165,7 @@ function InvoicePage() {
             <input
               className="w-[65%] p-1 rounded-md"
               type="text"
+              // value="fghfvhfa"
               value={user && user.name}
               placeholder="Your Company Name"
               onChange={(e) => setComp_name(e.target.value)}
@@ -536,8 +544,6 @@ function InvoicePage() {
      </div>
 
      </div>
-
-
     </div>
   );
 }
