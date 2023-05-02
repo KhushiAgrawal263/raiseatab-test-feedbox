@@ -5,12 +5,6 @@ const multer = require("multer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { verifyToken } = require("./requireLogin");
-// const bcrypt = require('bcryptjs');
-const puppeteer = require('puppeteer');
-require('@babel/core');
-require('@babel/register')({
-  extensions: ['.js', '.jsx']
-});
 
 const upload = multer({});
 const { authenticateGoogle, uploadToGoogleDrive } = require("../driveConfig");
