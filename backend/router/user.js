@@ -123,7 +123,7 @@ router.post("/login", (req, res) => {
 // Get Logged In user
 router.get("/getUser", verifyToken, async (req, res) => {
   console.log(req.user.userId);
-  const userId = req.user.userId;
+  const userId = req.user.user.user_id;
   const query = `SELECT * FROM users WHERE user_id = ${userId}`;
 
   db.query(query, (err, result) => {
