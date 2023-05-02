@@ -63,7 +63,10 @@ function InvoicePage() {
       price: 0,
       subamount: 0,
     };
+  
     setRows([...rows, newRow]);
+    
+   
   };
 
   const changeHandler = (e) => {
@@ -90,7 +93,10 @@ function InvoicePage() {
        {location.state && location.state.name==='technical'?"Technical Consultation":""}
        {location.state && location.state.name==='basic'?"Basic Templates":""}
       </div>
-      <div className="bg-gray-100 w-[60%] m-auto">
+
+      <div className="flex gap-[80px] ml-[70px] mt-5 mr-[70px]">
+      <div className="bg-gray-100 w-[60%]">
+        <form>
         <div className="flex">
           <div className="flex flex-col p-5 ml-[40px] mt-[30px] gap-3 w-[100%] ">
             {image ? (
@@ -127,6 +133,7 @@ function InvoicePage() {
               </div>
             )}
             <input
+              required
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="Your Company Name"
@@ -139,12 +146,14 @@ function InvoicePage() {
           "":
           <div className="flex flex-col gap-3">
             <input
+              required
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="Company's Address"
               onChange={(e) => setComp_add(e.target.value)}
             />
             <input
+              required
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="City"
@@ -154,23 +163,27 @@ function InvoicePage() {
               className="w-[45%] p-1 rounded-md"
               type="text"
               placeholder="State"
+              required
               onChange={(e) => setState(e.target.value)}
             />
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
+              required
               placeholder="ZipCode"
               onChange={(e) => setzip(e.target.value)}
             />
             <input
               className="w-[45%] p-1 rounded-md"
               type="text"
+              required
               placeholder="Contact Number"
               onChange={(e) => setContactNo(e.target.value)}
             />
             <input
               className="w-[45%] p-1 rounded-md"
               type="email"
+              required
               placeholder="Your Company's Email Id"
               onChange={(e) => setComp_email(e.target.value)}
             />
@@ -181,6 +194,7 @@ function InvoicePage() {
                   isSearchable={true}
                   options={options}
                   //   value={value}
+                  required
                   onChange={(e) => setCountry(e.target.value)}
                 />
               </div>
@@ -204,6 +218,7 @@ function InvoicePage() {
               <label className="mt-1">Bill To:</label>
               <input
                 type="text"
+                required
                 placeholder="Client Name"
                 className="w-[50%] p-1 rounded-md"
                 onChange={(e) => setClient_name(e.target.value)}
@@ -212,30 +227,35 @@ function InvoicePage() {
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
+              required
               placeholder="Client Company Name"
               onChange={(e) => setClient_comp_name(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
+              required
               placeholder="Client's Address"
               onChange={(e) => setClient_add(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
+              required
               placeholder="Company's Address"
               onChange={(e) => setClient_comp_add(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
+              required
               placeholder="City"
               onChange={(e) => setClient_city(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
+              required
               placeholder="State"
               onChange={(e) => setClient_state(e.target.value)}
             />
@@ -243,17 +263,20 @@ function InvoicePage() {
               className="w-[63%] p-1 rounded-md"
               type="text"
               placeholder="ZipCode"
+              required
               onChange={(e) => setClient_zip(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="text"
+              required
               placeholder="Contact Number"
               onChange={(e) => setClient_contact_no(e.target.value)}
             />
             <input
               className="w-[63%] p-1 rounded-md"
               type="email"
+              required
               placeholder="Client's Email Id"
               onChange={(e) => setClient_email(e.target.value)}
             />
@@ -264,6 +287,7 @@ function InvoicePage() {
                   className="w-[65%]"
                   isSearchable={true}
                   options={options}
+                  required
                   //   value={value}
                   onChange={(e) => setClient_country(e.target.value)}
                 />
@@ -272,30 +296,33 @@ function InvoicePage() {
           </div>
 
           <div className="flex flex-col gap-3 w-[100%]">
-            <div className="flex justify-between w-[100%] pr-[180px]">
+            <div className="flex justify-between w-[100%] pr-[130px]">
               <label className="mt-1">Invoice No. :</label>
               <input
                 type="text"
                 placeholder="#"
+                required
                 className="w-[60%] p-1 rounded-md"
                 onChange={(e) => setInvoiceNo(e.target.value)}
               />
             </div>
 
-            <div className="flex justify-between  w-[100%] pr-[180px]">
+            <div className="flex justify-between  w-[100%] pr-[130px]">
               <label className="mt-1">Invoice date:</label>
               <input
                 type="date"
+                required
                 placeholder="Name"
                 className="w-[60%] p-1 rounded-md"
                 onChange={(e) => setInvoiceDate(e.target.value)}
               />
             </div>
 
-            <div className="flex justify-between  w-[100%] pr-[180px]">
+            <div className="flex justify-between  w-[100%] pr-[130px]">
               <label className="mt-1">Invoice Total:</label>
               <input
                 type="number"
+                required
                 placeholder="Total"
                 className="w-[60%] p-1 rounded-md"
                 onChange={(e) => setInvoiceTotal(e.target.value)}
@@ -323,6 +350,7 @@ function InvoicePage() {
                 <tr key={rows.id} class="border-b border-gray-400">
                   <td className="p-2">
                     <textarea
+                      required
                       placeholder="Enter Item Name"
                       className=" bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -333,6 +361,7 @@ function InvoicePage() {
 
                   <td className="p-2">
                     <input
+                      required
                       type="number"
                       className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -346,6 +375,7 @@ function InvoicePage() {
                   </td>
                   <td className="p-2">
                     <input
+                      required
                       type="number"
                       className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -384,7 +414,8 @@ function InvoicePage() {
             <span className="text-left text-gray-700 font-[700]">Subtotal:</span>
             <input
                       type="number"
-                      className="w-[10%] ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+                      required
+                      className="w-[10%] focus:p-1 ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       focus:bg-gray-200 rounded-sm
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -395,7 +426,8 @@ function InvoicePage() {
             <span className="justify-left text-gray-700 font-[700]">Tax: </span>
             <input
                       type="number"
-                      className="w-[10%] ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+                      required
+                      className="w-[10%] focus:p-1 ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       focus:bg-gray-200 rounded-sm
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -406,7 +438,8 @@ function InvoicePage() {
             <span className="text-gray-500 text-gray-700 font-[700]">Total: </span>
             <input
                       type="number"
-                      className="w-[10%] ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+                      required
+                      className="w-[10%] focus:p-1 ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       focus:bg-gray-200 rounded-sm
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -431,6 +464,7 @@ function InvoicePage() {
               <div>Due Date:</div>
               <input
                 type="date"
+                required
                 placeholder="Name"
                 className="w-[35%] ml-[95px] p-1 rounded-md"
               />
@@ -453,6 +487,7 @@ function InvoicePage() {
           <div className="mt-4">Sincerely,</div>
           <input
             type="text"
+            required
             placeholder="Your Name"
             className=" w-[25%] mt-3 mb-5 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
           disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -463,6 +498,7 @@ function InvoicePage() {
           {location.state && location.state.name === "technical" || location.state.name === "business" ? (
             <input
               type="text"
+              required
               placeholder="Your Title"
               className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
           disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
@@ -476,6 +512,7 @@ function InvoicePage() {
             <input
               type="text"
               placeholder="Your Company"
+              required
               className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 
           disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
           invalid:border-pink-500 invalid:text-pink-600
@@ -487,17 +524,24 @@ function InvoicePage() {
         </div>
 
       <div className="ml-[60px] pb-5 flex gap-3">
-        <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
+        <button type="submit" className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
           Generate Invoice
         </button>
         <button
+          type="submit"
           className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]"
           onClick={handleSaveDraft}
         >
           Save Draft
         </button>
       </div>
-    </div>
+      </form>
+      </div>
+
+      <div className="bg-gray-100 w-[40%]">
+         
+      </div>
+      </div>
     </div>
   );
 }
