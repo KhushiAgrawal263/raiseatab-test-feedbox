@@ -9,6 +9,7 @@ import Login from './components/Login_Page/Login';
 import Register from './components/Register_Page/Register';
 import Profile from "./components/Profile_Page/Profile"
 import Temp from './components/Profile_Page/Temp';
+
 function App() {
   return (
     <div className="app">
