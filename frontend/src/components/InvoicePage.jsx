@@ -215,9 +215,9 @@ function InvoicePage() {
                   <div className="red w-[100%]">
                     <Select
                       className="w-[65%]"
-                      isSearchable={true}
+                      // isSearchable={true}    
                       options={options}
-                      //   value={value}
+                        value={value}
                       onChange={(e) => setCountry(e.target.value)}
                     />
                   </div>
