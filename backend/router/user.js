@@ -110,6 +110,53 @@ router.get("/getUser", verifyToken, async (req, res) => {
   });
 });
 
+const nodemailer = require('nodemailer');
+const fs = require('fs');
+
+// send mail
+router.post("/sendmail/:id", verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const query = `SELECT * FROM users WHERE user_id = ${userId}`;
+    console.log(req.body);
+    db.query(query, (err, result) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+    // let result = await User.findOne({ _id: req.params.id });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      port: 465,
+      secure: false,
+      auth: {
+        user: "anushkashah02.feedbox@gmail.com",
+        pass: "dvtjbrrqhgjypuya", // this requires apps password not original password
+      },
+    });
+
+    const pdfFile = fs.readFileSync('my-pdf.pdf');
+
+    const mailOptions = {
+      from: '<anushkashah02.feedbox@gmail.com>',
+      to:  `${result.email}`,
+      subject: 'My PDF Attachment',
+      text: 'Please find attached my PDF',
+      attachments: [
+        {
+          filename: 'my-pdf.pdf',
+          content: pdfFile,
+        },
+      ],
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.res);
+
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 // Generate invoice and save as draft
 router.post("/set/invoice/draft/:type", verifyToken, async (req, res) => {
   try {
@@ -188,7 +235,7 @@ router.post(
 router.get("/get/draft/invoices", verifyToken, async (req, res) => {
   console.log(req.user.userId);
   try {
-    const userquery = `UPDATE users SET name = ${req.body.name} where user_id=${req.user.userId}`;
+    const sqlInsert = `select * from users JOIN invoices on users.user_id= invoices.user_id where invoices.user_id=${req.user.userId}`;
     db.query(sqlInsert, (err, result) => {
       if (err) throw err;
       res.status(200).json(result);

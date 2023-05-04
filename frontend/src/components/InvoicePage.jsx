@@ -6,13 +6,14 @@ import { MdCancel } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 function InvoicePage() {
   const location = useLocation();
   console.log(location);
   const [options, setOptions] = useState(countryList().getData());
   const [value, setValue] = useState("");
-
 
   console.log(countryList().getData());
   const [imgg, setImgg] = useState();
@@ -49,7 +50,7 @@ function InvoicePage() {
   const [dueDate, setDueDate] = useState("");
   const [yourName, setYourName] = useState("");
 
-  const [items,setItems]=useState([]);
+  const [items, setItems] = useState([]);
 
   const jwt = localStorage.getItem("invoiceJWT");
   const url = process.env.REACT_APP_URL;
@@ -133,31 +134,34 @@ function InvoicePage() {
       invoice_id: invoiceNo,
       invoiceDate: invoiceDate,
       invoiceTotal: invoiceTotal,
-      client_name:client_name,
-      client_comp_name:client_comp_name,
-      client_add:clientAdd,
+      client_name: client_name,
+      client_comp_name: client_comp_name,
+      client_add: clientAdd,
       client_comp_add: client_comp_add,
       client_city: client_city,
-      client_state:client_state,
+      client_state: client_state,
       client_zip: client_zip,
-      client_contactNo : client_contact_no,
+      client_contactNo: client_contact_no,
       client_email: client_email,
       client_country: client_country,
       subTotal: subTotal,
       tax: tax,
       total: total,
       dueDate: dueDate,
-      yourName:yourName
+      yourName: yourName,
     };
 
-    const newData = await fetch(`${url}/set/invoice/draft/${location.state.name}`, {
-      method: "POST",
-      body: JSON.stringify(val),
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-        'Content-Type': "application/json"
-      },
-    });
+    const newData = await fetch(
+      `${url}/set/invoice/draft/${location.state.name}`,
+      {
+        method: "POST",
+        body: JSON.stringify(val),
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const newRes = await newData.json();
   };
 
@@ -167,6 +171,35 @@ function InvoicePage() {
 
   const changeClientCountry = (e) => {
     setClient_country(e.label);
+  };
+
+  const handleEmail = async (id, pdf) => {
+    const formData = new FormData();
+    formData.append("pdf", pdf);
+    const data = await fetch(`http://localhost:8000/sendmail/${id}`, {
+      method: "POST",
+      body: formData,
+      headers: { "Content-Type": "application/json" },
+    });
+    const res = await data.json();
+    console.log("Mail sent", res);
+  };
+
+  const createPDF = async (id) => {
+    const pdf = new jsPDF("portrait", "pt", "a4");
+    const data = await html2canvas(document.querySelector("#pdf"));
+    const img = data.toDataURL("image/png");
+    const imgProperties = pdf.getImageProperties(img);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+    console.log(data);
+    console.log(pdf);
+    // pdf.save("Invoice.pdf");
+    console.log(pdf.save("Invoice.pdf"));
+    // setPdf(pdf.save("Invoice.pdf"));
+    console.log(pdf);
+    handleEmail(id, pdf);
   };
 
   return (
@@ -432,17 +465,17 @@ function InvoicePage() {
                       <textarea
                         placeholder="Enter Item Name"
                         className="w-[140px] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-      focus:bg-gray-200 pl-2 rounded-sm"
+                                  disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+                                  focus:bg-gray-200 pl-2 rounded-sm"
                       />
                     </td>
 
                     <td className="p-2">
                       <input
-                        type="number"
+                        type="number"  onChange={(e)=>{console.log(rows.id);}}
                         className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-     focus:bg-gray-200 rounded-sm"
+                                  disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+                                   focus:bg-gray-200 rounded-sm"
                         placeholder={
                           location.state && location.state.name === "technical"
                             ? "Hours"
@@ -454,13 +487,23 @@ function InvoicePage() {
                       <input
                         type="number"
                         className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-      focus:bg-gray-200 rounded-sm
-      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+                                  focus:bg-gray-200 rounded-sm
+                                  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="Price"
                       />
                     </td>
-                    <td className="p-2">50</td>
+
+                    <td className="p-2">
+                      <input
+                        type="number"
+                        className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+                                  disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+                                  focus:bg-gray-200 rounded-sm
+                                  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        placeholder="Amount"
+                      />
+                    </td>
                     <td>
                       <ImCross
                         onClick={() => handleDeleteRow(rows.id)}
@@ -482,135 +525,143 @@ function InvoicePage() {
               <AiFillPlusCircle size="22" style={{ marginTop: "1px" }} />
               Add Items
             </div>
-          </div>
 
-          <hr class="w-[88%] mt-4  ml-[60px] h-0.5 bg-gray-100 border-0 border-dashed rounded md:my-10 dark:bg-gray-300"></hr>
-          <div className="text-right mr-[45px] text-[16px] flex flex-col gap-2">
-            <div>
-              <span className="text-left text-gray-700 font-[700]">
-                Subtotal:
-              </span>
-              <input
-                type="number"
-                className="w-[10%] focus:pl-1 ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-      focus:bg-gray-200 rounded-sm
-      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                placeholder="subtotal" onChange={(e)=>setSubTotal(e.target.value)}
-              />
-            </div>
-            <div>
-              <span className="justify-left text-gray-700 font-[700]">
-                Tax:{" "}
-              </span>
-              <input
-                type="number"
-                className="w-[10%] focus:pl-1 ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-      focus:bg-gray-200 rounded-sm
-      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                placeholder="tax" onChange={(e)=>setTax(e.target.value)}
-              />
-            </div>
-            <div>
-              <span className="text-gray-500 focus:pl-2 text-gray-700 font-[700]">
-                Total:{" "}
-              </span>
-              <input
-                type="number"
-                className="w-[10%] ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-      focus:bg-gray-200 rounded-sm
-      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                placeholder="total" onChange={(e)=>setTotal(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <hr class="w-[88%] ml-[60px] h-0.5 bg-gray-100 border-0 border-dashed rounded md:my-10 dark:bg-gray-300"></hr>
-
-          <div className="flex flex-col ml-[60px]">
-            <div className="font-bold text-[18px]">Terms & Conditions</div>
-            <div className="mt-2 flex flex-col w-[400px] gap-3">
-              <div className="flex  justify-between">
-                <div>Payment Terms:</div>
-                <textarea
-                  placeholder="Accepted Payment Terms"
-                  className="pl-2 w-[230px] rounded-md"
-                />
-              </div>
-              <div className="flex">
-                <div>Due Date:</div>
+            <hr class="w-[88%] mt-4  ml-[60px] h-0.5 bg-gray-100 border-0 border-dashed rounded md:my-10 dark:bg-gray-300"></hr>
+            <div className="text-right mr-[45px] text-[16px] flex flex-col gap-2">
+              <div>
+                <span className="text-left text-gray-700 font-[700]">
+                  Subtotal:
+                </span>
                 <input
-                  type="date"
-                  placeholder="Name"
-                  className="w-[35%] ml-[95px] p-1 rounded-md" onChange={(e)=>setDueDate(e.target.value)}
+                  type="number"
+                  className="w-[10%] focus:pl-1 ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+      focus:bg-gray-200 rounded-sm
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  placeholder="subtotal"
+                  onChange={(e) => setSubTotal(e.target.value)}
+                />
+              </div>
+              <div>
+                <span className="justify-left text-gray-700 font-[700]">
+                  Tax:{" "}
+                </span>
+                <input
+                  type="number"
+                  className="w-[10%] focus:pl-1 ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+      focus:bg-gray-200 rounded-sm
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  placeholder="tax"
+                  onChange={(e) => setTax(e.target.value)}
+                />
+              </div>
+              <div>
+                <span className="text-gray-500 focus:pl-2 text-gray-700 font-[700]">
+                  Total:{" "}
+                </span>
+                <input
+                  type="number"
+                  className="w-[10%] ml-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+      focus:bg-gray-200 rounded-sm
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  placeholder="total"
+                  onChange={(e) => setTotal(e.target.value)}
                 />
               </div>
             </div>
 
-            <div className="flex mt-5 gap-2">
-              <div className="font-bold">
-                Please make payment to the following bank account:
-              </div>
-              <Link to="/" className="underline">
-                Link to account
-              </Link>
-            </div>
-            <div className="mt-5 w-[90%] pb-5">
-              Thank you for your business! If you have any questions or concerns
-              about this invoice, please do not hesitate to contact us at the
-              contact information provided above.
-            </div>
-            <div className="mt-4">Sincerely,</div>
-            <input
-              type="text"
-              placeholder="Your Name"
-              className=" w-[25%] mt-3 mb-5 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-          invalid:border-pink-500 invalid:text-pink-600
-          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
-              //   className="w-[25%] mt-3 mb-5 p-2 rounded-md"
-            />
-            {(location.state && location.state.name === "technical") ||
-            location.state.name === "business" ? (
-              <input
-                type="text"
-                placeholder="Your Title"
-                className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-          invalid:border-pink-500 invalid:text-pink-600
-          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
-              />
-            ) : (
-              ""
-            )}
-            {(location.state && location.state.name === "technical") ||
-            location.state.name === "business" ||
-            location.state.name === "generic" ? (
-              <input
-                type="text"
-                placeholder="Your Company" onChange={(e)=>setYourName(e.target.value)}
-                className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
-          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-          invalid:border-pink-500 invalid:text-pink-600
-          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
-              />
-            ) : (
-              ""
-            )}
-          </div>
+            <hr class="w-[88%] ml-[60px] h-0.5 bg-gray-100 border-0 border-dashed rounded md:my-10 dark:bg-gray-300"></hr>
 
-          <div className="ml-[60px] pb-5 flex gap-3">
-            <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
-              Generate Invoice
-            </button>
-            <button
-              className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]"
-              onClick={handleSaveDraft}
-            >
-              Save Draft
-            </button>
+            <div className="flex flex-col ml-[60px]">
+              <div className="font-bold text-[18px]">Terms & Conditions</div>
+              <div className="mt-2 flex flex-col w-[400px] gap-3">
+                <div className="flex  justify-between">
+                  <div>Payment Terms:</div>
+                  <textarea
+                    placeholder="Accepted Payment Terms"
+                    className="pl-2 w-[230px] rounded-md"
+                  />
+                </div>
+                <div className="flex">
+                  <div>Due Date:</div>
+                  <input
+                    type="date"
+                    placeholder="Name"
+                    className="w-[35%] ml-[95px] p-1 rounded-md"
+                    onChange={(e) => setDueDate(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="flex mt-5 gap-2">
+                <div className="font-bold">
+                  Please make payment to the following bank account:
+                </div>
+                <Link to="/" className="underline">
+                  Link to account
+                </Link>
+              </div>
+              <div className="mt-5 w-[90%] pb-5">
+                Thank you for your business! If you have any questions or
+                concerns about this invoice, please do not hesitate to contact
+                us at the contact information provided above.
+              </div>
+              <div className="mt-4">Sincerely,</div>
+              <input
+                type="text"
+                placeholder="Your Name"
+                className=" w-[25%] mt-3 mb-5 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          invalid:border-pink-500 invalid:text-pink-600
+          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
+                //   className="w-[25%] mt-3 mb-5 p-2 rounded-md"
+              />
+              {(location.state && location.state.name === "technical") ||
+              location.state.name === "business" ? (
+                <input
+                  type="text"
+                  placeholder="Your Title"
+                  className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          invalid:border-pink-500 invalid:text-pink-600
+          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
+                />
+              ) : (
+                ""
+              )}
+              {(location.state && location.state.name === "technical") ||
+              location.state.name === "business" ||
+              location.state.name === "generic" ? (
+                <input
+                  type="text"
+                  placeholder="Your Company"
+                  onChange={(e) => setYourName(e.target.value)}
+                  className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          invalid:border-pink-500 invalid:text-pink-600
+          focus:invalid:border-pink-500 focus:invalid:ring-pink-500 focus:bg-gray-200 rounded-sm"
+                />
+              ) : (
+                ""
+              )}
+            </div>
+
+            <div className="ml-[60px] pb-5 flex gap-3">
+              <button
+                onClick={createPDF}
+                className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]"
+              >
+                Generate Invoice
+              </button>
+              <button
+                className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]"
+                onClick={handleSaveDraft}
+              >
+                Save Draft
+              </button>
+            </div>
           </div>
         </div>
 
