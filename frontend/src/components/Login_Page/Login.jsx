@@ -34,7 +34,7 @@ function Login() {
       <section className="flex justify-center items-center h-screen bg-gray-800">
         <div className="max-w-md w-full bg-gray-900 rounded p-6 space-y-4 ">
           <div className="mb-5 justify-center flex-column text-center">
-            <p className="text-gray-400 mt-1">Login In</p>
+            <p className="text-gray-400 mt-1">Login</p>
             <h2 className="text-xl font-bold text-white mt-4">Join our community</h2>
           </div>
           <div>
