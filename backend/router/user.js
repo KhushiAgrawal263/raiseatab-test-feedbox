@@ -111,26 +111,23 @@ router.get("/getUser", verifyToken, async (req, res) => {
 });
 
 // Generate invoice and save as draft
-router.post("/set/invoice/draft", verifyToken, async (req, res) => {
-  console.log(req.user);
+router.post("/set/invoice/draft/:type", verifyToken, async (req, res) => {
   try {
-    const val = {
-      user_id: req.user.userId,
-      invoice_id: 1,
-      // invoice_date: 12-02-2023,
-      invoice_total: 900,
-      client_name: "anushka",
-      status: "draft",
-    };
-    console.log(...Object.keys(val));
-    const sqlInsert =
-      "INSERT INTO invoices (user_id,invoice_id,invoice_total,client_name,status) VALUES (?,?,?,?,?);";
-    db.query(sqlInsert, Object.values(val), (err, result) => {
+    let clone = Object.values(req.body);
+    clone.push(req.user.userId)
+    clone.push("draft")
+    console.log(clone);
+    let sqlInsert;
+    if(req.params.type==="mentoring"){
+      sqlInsert =
+      "INSERT INTO invoices (invoice_id,invoice_date,invoice_total,client_name,client_comp_name,client_add,client_comp_add,client_city,client_state,client_zip,client_contactNo,client_email,client_country,subtotal,tax,total,dueDate,user_id,status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    }
+    db.query(sqlInsert, clone, (err, result) => {
       if (err) {
-        console.log(err, "err");
+        console.log(err);
         res.status(200).json(err);
       } else {
-        console.log(result, "result");
+        console.log("dobe");
         res.status(200).json(result);
       }
     });

@@ -13,6 +13,8 @@ function InvoicePage() {
   const [options, setOptions] = useState(countryList().getData());
   const [value, setValue] = useState("");
 
+
+  console.log(countryList().getData());
   const [imgg, setImgg] = useState();
   const [file, setFile] = useState("");
   const [rows, setRows] = useState([]);
@@ -45,16 +47,14 @@ function InvoicePage() {
   const [tax, setTax] = useState("");
   const [total, setTotal] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [yourName, setYourName] = useState("");
+
+  const [items,setItems]=useState([]);
 
   const jwt = localStorage.getItem("invoiceJWT");
   const url = process.env.REACT_APP_URL;
 
   useEffect(() => {
-    if (comp_name || compAdd || city) {
-      setComp_name(comp_name);
-      setComp_add(compAdd);
-      setCity(city);
-    }
     const getUser = async () => {
       const data = await fetch(`${process.env.REACT_APP_URL}/getUser`, {
         headers: {
@@ -74,7 +74,7 @@ function InvoicePage() {
       setContactNo(res[0].phoneNo);
       setCountry(res[0].country);
       setImage(true);
-      setLogoId(res[0].logo)
+      setLogoId(res[0].logo);
     };
     getUser();
   }, []);
@@ -106,41 +106,67 @@ function InvoicePage() {
     setRows(newRows);
   };
 
-  const handleSaveDraft = async() => {
+  const handleSaveDraft = async () => {
     console.log(imgg);
-    let formData= new FormData();
-    if(imgg) formData.append("logo",imgg)
-    if(comp_name) formData.append("companyName",comp_name);
-    if(compAdd) formData.append("companyAddress",compAdd)
-    if(city) formData.append("city",city)
-    if(state) formData.append("state",state)
-    if(zip) formData.append("zipcode",zip)
-    if(country) formData.append("country",country)
-    if(comp_email) formData.append("email",comp_email)
-    if(contactNo) formData.append("phoneNo",contactNo)
-    if(logoId) formData.append("logoId",logoId)
+    let formData = new FormData();
+    if (imgg) formData.append("logo", imgg);
+    if (comp_name) formData.append("companyName", comp_name);
+    if (compAdd) formData.append("companyAddress", compAdd);
+    if (city) formData.append("city", city);
+    if (state) formData.append("state", state);
+    if (zip) formData.append("zipcode", zip);
+    if (country) formData.append("country", country);
+    if (comp_email) formData.append("email", comp_email);
+    if (contactNo) formData.append("phoneNo", contactNo);
+    if (logoId) formData.append("logoId", logoId);
 
-    const data = await fetch(`${url}/update/user/invoice/${user.user_id}`, {
+    // const data = await fetch(`${url}/update/user/invoice/${user.user_id}`, {
+    //   method: "POST",
+    //   body: formData,
+    //   headers: {
+    //     Authorization: `Bearer ${jwt}`,
+    //   },
+    // });
+    // const res = await data.json();
+
+    const val = {
+      invoice_id: invoiceNo,
+      invoiceDate: invoiceDate,
+      invoiceTotal: invoiceTotal,
+      client_name:client_name,
+      client_comp_name:client_comp_name,
+      client_add:clientAdd,
+      client_comp_add: client_comp_add,
+      client_city: client_city,
+      client_state:client_state,
+      client_zip: client_zip,
+      client_contactNo : client_contact_no,
+      client_email: client_email,
+      client_country: client_country,
+      subTotal: subTotal,
+      tax: tax,
+      total: total,
+      dueDate: dueDate,
+      yourName:yourName
+    };
+
+    const newData = await fetch(`${url}/set/invoice/draft/${location.state.name}`, {
       method: "POST",
-      body: formData,
+      body: JSON.stringify(val),
       headers: {
         Authorization: `Bearer ${jwt}`,
-      }
-    });
-    const res = await data.json();
-
-    const val ={
-      
-    }
-
-    const newData = await fetch(`${url}/update/user/invoice/${user.user_id}`, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      }
+        'Content-Type': "application/json"
+      },
     });
     const newRes = await newData.json();
+  };
+
+  const changeHandler = (e) => {
+    setCountry(e.label);
+  };
+
+  const changeClientCountry = (e) => {
+    setClient_country(e.label);
   };
 
   return (
@@ -265,7 +291,8 @@ function InvoicePage() {
                         isSearchable={true}
                         options={options}
                         defaultValue={country}
-                        onChange={(e) => setCountry(e.target.value)}
+                        value={user && user.country}
+                        onChange={changeHandler}
                       />
                     </div>
                   </div>
@@ -345,7 +372,7 @@ function InvoicePage() {
                     isSearchable={true}
                     options={options}
                     //   value={value}
-                    onChange={(e) => setClient_country(e.target.value)}
+                    onChange={changeClientCountry}
                   />
                 </div>
               </div>
@@ -469,7 +496,7 @@ function InvoicePage() {
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       focus:bg-gray-200 rounded-sm
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                placeholder="subtotal"
+                placeholder="subtotal" onChange={(e)=>setSubTotal(e.target.value)}
               />
             </div>
             <div>
@@ -482,7 +509,7 @@ function InvoicePage() {
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       focus:bg-gray-200 rounded-sm
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                placeholder="tax"
+                placeholder="tax" onChange={(e)=>setTax(e.target.value)}
               />
             </div>
             <div>
@@ -495,7 +522,7 @@ function InvoicePage() {
       disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
       focus:bg-gray-200 rounded-sm
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                placeholder="total"
+                placeholder="total" onChange={(e)=>setTotal(e.target.value)}
               />
             </div>
           </div>
@@ -517,7 +544,7 @@ function InvoicePage() {
                 <input
                   type="date"
                   placeholder="Name"
-                  className="w-[35%] ml-[95px] p-1 rounded-md"
+                  className="w-[35%] ml-[95px] p-1 rounded-md" onChange={(e)=>setDueDate(e.target.value)}
                 />
               </div>
             </div>
@@ -563,7 +590,7 @@ function InvoicePage() {
             location.state.name === "generic" ? (
               <input
                 type="text"
-                placeholder="Your Company"
+                placeholder="Your Company" onChange={(e)=>setYourName(e.target.value)}
                 className=" w-[25%] mb-4 focus:p-2 bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
           disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
           invalid:border-pink-500 invalid:text-pink-600
