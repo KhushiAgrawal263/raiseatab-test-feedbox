@@ -48,12 +48,7 @@ function InvoicePage() {
   const jwt = localStorage.getItem("invoiceJWT");
 
   useEffect(() => {
-    if(comp_name || compAdd || city)
-    {
-       setComp_name(comp_name);
-       setComp_add(compAdd);
-       setCity(city);
-    }
+  
     const getUser = async () => {
       const data = await fetch(`${process.env.REACT_APP_URL}/getUser`, {
         headers: {
@@ -64,11 +59,21 @@ function InvoicePage() {
       console.log(res[0]);
       setUser(res[0]);
       setFile(`https://drive.google.com/uc?id=${res[0].logo}`)
-      setComp_name(comp_name===""?res[0].comp_name:comp_name);
+      setComp_name(res[0].company_name);
       setImage(true);
     };
     getUser();
-  }, [compAdd,comp_name,city]);
+  });
+
+  const changeHandler = countryVal => {
+    setCountry({ countryVal });
+  };
+
+  const changeClientCountry = countryVal => {
+    setClient_country({ countryVal });
+  };
+
+  
 
   function handleChange(e) {
     setFile(URL.createObjectURL(e.target.files[0]));
@@ -217,8 +222,8 @@ function InvoicePage() {
                       className="w-[65%]"
                       isSearchable={true}
                       options={options}
-                      //   value={value}
-                      onChange={(e) => setCountry(e.target.value)}
+                      value={user && user.country}
+                      onChange={(e)=>changeHandler}
                     />
                   </div>
                 </div>
@@ -297,8 +302,8 @@ function InvoicePage() {
                   className="w-[65%]"
                   isSearchable={true}
                   options={options}
-                  //   value={value}
-                  onChange={(e) => setClient_country(e.target.value)}
+                  value={user && user.client_country}
+                  onChange={(e)=>changeClientCountry}
                 />
               </div>
             </div>
