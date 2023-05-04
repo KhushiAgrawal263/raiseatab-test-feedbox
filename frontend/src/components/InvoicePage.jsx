@@ -30,6 +30,7 @@ function InvoicePage() {
   const [contactNo, setContactNo] = useState("");
   const [comp_email, setComp_email] = useState("");
   const [country, setCountry] = useState("");
+  const [logoId, setLogoId] = useState();
   const [client_name, setClient_name] = useState("");
   const [client_comp_name, setClient_comp_name] = useState("");
   const [clientAdd, setClient_add] = useState("");
@@ -46,6 +47,7 @@ function InvoicePage() {
   const [dueDate, setDueDate] = useState("");
 
   const jwt = localStorage.getItem("invoiceJWT");
+  const url = process.env.REACT_APP_URL;
 
   useEffect(() => {
     if (comp_name || compAdd || city) {
@@ -72,6 +74,7 @@ function InvoicePage() {
       setContactNo(res[0].phoneNo);
       setCountry(res[0].country);
       setImage(true);
+      setLogoId(res[0].logo)
     };
     getUser();
   }, []);
@@ -103,18 +106,41 @@ function InvoicePage() {
     setRows(newRows);
   };
 
-  const handleSaveDraft = () => {
+  const handleSaveDraft = async() => {
     console.log(imgg);
     let formData= new FormData();
-    if(comp_name) user['companyName']=comp_name;
-    if(compAdd) user['companyAddress']=compAdd;
-    if(city) user['companyAddress']=city;
-    if(state) user['companyAddress']=state;
-    if(zip) user['companyAddress']=zip;
-    if(country) user['companyAddress']=country;
-    if(comp_email) user['companyAddress']=comp_email;
-    if(contactNo) user['companyAddress']=contactNo;
+    if(imgg) formData.append("logo",imgg)
+    if(comp_name) formData.append("companyName",comp_name);
+    if(compAdd) formData.append("companyAddress",compAdd)
+    if(city) formData.append("city",city)
+    if(state) formData.append("state",state)
+    if(zip) formData.append("zipcode",zip)
+    if(country) formData.append("country",country)
+    if(comp_email) formData.append("email",comp_email)
+    if(contactNo) formData.append("phoneNo",contactNo)
+    if(logoId) formData.append("logoId",logoId)
 
+    const data = await fetch(`${url}/update/user/invoice/${user.user_id}`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    });
+    const res = await data.json();
+
+    const val ={
+      
+    }
+
+    const newData = await fetch(`${url}/update/user/invoice/${user.user_id}`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+    });
+    const newRes = await newData.json();
   };
 
   return (
@@ -238,7 +264,7 @@ function InvoicePage() {
                         className="w-[65%]"
                         isSearchable={true}
                         options={options}
-                        value={country}
+                        defaultValue={country}
                         onChange={(e) => setCountry(e.target.value)}
                       />
                     </div>
