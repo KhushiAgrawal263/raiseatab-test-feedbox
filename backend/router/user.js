@@ -4,27 +4,11 @@ const db = require("../config");
 const multer = require("multer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { google } = require("googleapis");
 const { verifyToken } = require("./requireLogin");
 
 const upload = multer({});
 const { authenticateGoogle, uploadToGoogleDrive } = require("../driveConfig");
-// import InvoicePage from "../../frontend/src/components/InvoicePage.jsx";
-
-// router.post("/generate",async(req,res)=>{
-//   try{
-//   const browser = await puppeteer.launch();
-
-//   const page = await browser.newPage();
-
-//   await page.setContent(component);
-//   const pdf = await page.pdf({ format: 'A4' });
-//   await browser.close();
-//   return pdf;
-//   }
-//   catch (error) {
-//     res.status(500).json(error);
-//   }
-// })
 
 async function generatePdf(component) {
   const browser = await puppeteer.launch();
@@ -32,15 +16,10 @@ async function generatePdf(component) {
   const page = await browser.newPage();
 
   await page.setContent(component);
-  const pdf = await page.pdf({ format: 'A4' });
+  const pdf = await page.pdf({ format: "A4" });
   await browser.close();
   return pdf;
-
 }
-
-// const pdf = await generatePdf('<InvoicePage />');
-
-
 
 // Register a user
 router.post("/register", upload.single("logo"), async (req, res) => {
@@ -122,7 +101,6 @@ router.post("/login", (req, res) => {
 
 // Get Logged In user
 router.get("/getUser", verifyToken, async (req, res) => {
-  console.log(req.user.userId);
   const userId = req.user.userId;
   const query = `SELECT * FROM users WHERE user_id = ${userId}`;
 
@@ -132,53 +110,146 @@ router.get("/getUser", verifyToken, async (req, res) => {
   });
 });
 
-// Generate invoice and save as draft
-router.post("/set/invoice/draft", verifyToken, async (req, res) => {
-  console.log(req.user);
+const nodemailer = require('nodemailer');
+const fs = require('fs');
+
+// send mail
+router.post("/sendmail/:id", verifyToken, async (req, res) => {
   try {
-    const val={
-      user_id : req.user.userId,
-      invoice_id: 1,
-      // invoice_date: 12-02-2023,
-      invoice_total: 900,
-      client_name: "anushka",
-      status:"draft"
-    }
-    console.log(...Object.keys(val));
-    const sqlInsert =
-        "INSERT INTO invoices (user_id,invoice_id,invoice_total,client_name,status) VALUES (?,?,?,?,?);";
-        db.query(
-          sqlInsert,
-          Object.values(val),
-          (err, result) => {
-            if (err) {
-              console.log(err, "err");
-              res.status(200).json(err);
-            } else {
-              console.log(result, "result");
-              res.status(200).json(result);
-            }
-          }
-        );
+    const userId = req.user.userId;
+    const query = `SELECT * FROM users WHERE user_id = ${userId}`;
+    console.log(req.body);
+    db.query(query, (err, result) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+    // let result = await User.findOne({ _id: req.params.id });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      port: 465,
+      secure: false,
+      auth: {
+        user: "anushkashah02.feedbox@gmail.com",
+        pass: "dvtjbrrqhgjypuya", // this requires apps password not original password
+      },
+    });
+
+    const pdfFile = fs.readFileSync('my-pdf.pdf');
+
+    const mailOptions = {
+      from: '<anushkashah02.feedbox@gmail.com>',
+      to:  `${result.email}`,
+      subject: 'My PDF Attachment',
+      text: 'Please find attached my PDF',
+      attachments: [
+        {
+          filename: 'my-pdf.pdf',
+          content: pdfFile,
+        },
+      ],
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.res);
+
   } catch (error) {
-    res.status(500).json(error)
+    res.status(500).json(error);
   }
 });
+
+// Generate invoice and save as draft
+router.post("/set/invoice/draft/:type", verifyToken, async (req, res) => {
+  try {
+    let clone = Object.values(req.body);
+    clone.push(req.user.userId)
+    clone.push("draft")
+    console.log(clone);
+    let sqlInsert;
+    if(req.params.type==="mentoring"){
+      sqlInsert =
+      "INSERT INTO invoices (invoice_id,invoice_date,invoice_total,client_name,client_comp_name,client_add,client_comp_add,client_city,client_state,client_zip,client_contactNo,client_email,client_country,subtotal,tax,total,dueDate,user_id,status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    }
+    db.query(sqlInsert, clone, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(200).json(err);
+      } else {
+        console.log("dobe");
+        res.status(200).json(result);
+      }
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// update user on invoice generation
+router.post(
+  "/update/user/invoice/:id",
+  upload.single("logo"),
+  verifyToken,
+  async (req, res) => {
+    try {
+      console.log(req.body, "llll");
+      console.log(req.file, "file");
+      if (req.file) {
+        const auth = authenticateGoogle();
+        const newlogo = await uploadToGoogleDrive(
+          req.file,
+          auth,
+          process.env.DRIVE_LOGO
+        );
+        const drive = google.drive({ version: "v3", auth });
+        drive.files
+          .delete({
+            fileId: req.body.logoId,
+          })
+          .then(async function (response) {
+            const { logoId, ...cloneVal } = req.body;
+            console.log(cloneVal);
+            const newClone = Object.values(cloneVal);
+            newClone.push(newlogo.data.id);
+            console.log(newClone, "new clone");
+            const userquery = `UPDATE users SET companyName = ?, companyAddress=?, city=?, state=?, zipcode=?, country=?, email=?, phoneNo=?, logo=? where user_id=${req.params.id}`;
+            db.query(userquery, newClone, (err, result) => {
+              if (err) throw err;
+              res.status(200).json(result);
+            });
+          });
+      } else {
+        const { logoId, ...cloneVal } = req.body;
+        console.log(cloneVal);
+        const userquery = `UPDATE users SET companyName = ?, companyAddress=?, city=?, state=?, zipcode=?, country=?, email=?, phoneNo=?  where user_id=${req.params.id}`;
+        db.query(userquery, Object.values(cloneVal), (err, result) => {
+          if (err) throw err;
+          res.status(200).json(result);
+        });
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+);
 
 // get drafts of a particular user
 router.get("/get/draft/invoices", verifyToken, async (req, res) => {
   console.log(req.user.userId);
   try {
-    const sqlInsert =
-        `select * from users JOIN invoices on users.user_id= invoices.user_id where invoices.user_id=${req.user.userId}`;
-        db.query(sqlInsert, (err, result) => {
-          if (err) throw err;
-          res.status(200).json(result);
-        });
+    const sqlInsert = `select * from users JOIN invoices on users.user_id= invoices.user_id where invoices.user_id=${req.user.userId}`;
+    db.query(sqlInsert, (err, result) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+
+    // const sqlInsert =
+    //     `select * from users JOIN invoices on users.user_id= invoices.user_id where invoices.user_id=${req.user.userId}`;
+    //     db.query(sqlInsert, (err, result) => {
+    //       if (err) throw err;
+    //       res.status(200).json(result);
+    //     });
   } catch (error) {
-    res.status(500).json(error)
+    res.status(500).json(error);
   }
 });
-
 
 module.exports = router;
