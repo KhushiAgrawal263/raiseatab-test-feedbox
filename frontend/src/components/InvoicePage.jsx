@@ -6,6 +6,8 @@ import { MdCancel } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 function InvoicePage() {
   const location = useLocation();
@@ -44,7 +46,6 @@ function InvoicePage() {
   const [tax, setTax] = useState("");
   const [total, setTotal] = useState("");
   const [dueDate, setDueDate] = useState("");
-
   const jwt = localStorage.getItem("invoiceJWT");
 
   useEffect(() => {
@@ -65,12 +66,13 @@ function InvoicePage() {
     getUser();
   });
 
-  const changeHandler = countryVal => {
-    setCountry({ countryVal });
+  const changeHandler = e => {
+    setCountry(e.label );
+    console.log(e.label);
   };
 
-  const changeClientCountry = countryVal => {
-    setClient_country({ countryVal });
+  const changeClientCountry = e => {
+    setClient_country( e.label);
   };
 
   
@@ -107,6 +109,38 @@ function InvoicePage() {
     const val = {};
   };
 
+  const handleEmail = async (id,pdf) => {
+    const formData=new FormData();
+    formData.append("pdf",pdf)
+    const data = await fetch(`http://localhost:8000/sendmail/${id}`, {
+      method: "POST",
+      body:formData,
+      headers: { "Content-Type": "application/json" },
+    });
+    const res = await data.json();
+    console.log("Mail sent",res);
+  };
+
+  const createPDF = async (id) => { 
+    const pdf = new jsPDF("portrait", "pt", "a4"); 
+    const data = await html2canvas(document.querySelector("#pdf"));
+    const img = data.toDataURL("image/png");
+    const imgProperties = pdf.getImageProperties(img);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+    console.log(data);    
+    console.log(pdf);
+    // pdf.save("Invoice.pdf");
+    console.log(pdf.save("Invoice.pdf"));
+    // setPdf(pdf.save("Invoice.pdf"));
+    console.log(pdf);
+    handleEmail(id,pdf);
+  };
+ 
+  
+
+
   return (
     <div className="dark:bg-gray-900 pb-[50px]">
       <div className="text-white text-center p-6 font-[700] text-[27px] text-gray-300">
@@ -131,7 +165,7 @@ function InvoicePage() {
       </div>
       <div className="flex gap-[80px] ml-[70px] mt-5 mr-[70px]">
       {/* left div  */}
-      <div className="bg-gray-100 w-[50%]">
+      <div id="pdf" className="bg-gray-100 w-[50%]">
         <div className="flex">
           <div className="flex flex-col p-5 ml-[40px] mt-[30px] gap-3 w-[100%] ">
             { image ? (
@@ -223,7 +257,7 @@ function InvoicePage() {
                       isSearchable={true}
                       options={options}
                       value={user && user.country}
-                      onChange={(e)=>changeHandler}
+                      onChange={changeHandler}
                     />
                   </div>
                 </div>
@@ -302,8 +336,8 @@ function InvoicePage() {
                   className="w-[65%]"
                   isSearchable={true}
                   options={options}
-                  value={user && user.client_country}
-                  onChange={(e)=>changeClientCountry}
+                  value={ user && user.client_country}
+                  onChange={changeClientCountry}
                 />
               </div>
             </div>
@@ -391,7 +425,17 @@ function InvoicePage() {
                       placeholder="Price"
                     />
                   </td>
-                  <td className="p-2">50</td>
+
+                  <td className="p-2">
+                    <input
+                      type="number"
+                      className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+      focus:bg-gray-200 rounded-sm
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="Amount"
+                    />
+                  </td>
                   <td>
                     <ImCross
                       onClick={() => handleDeleteRow(rows.id)}
@@ -531,7 +575,7 @@ function InvoicePage() {
         </div>
 
         <div className="ml-[60px] pb-5 flex gap-3">
-          <button className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
+          <button onClick={createPDF} className="bg-black rounded-md p-3 text-white hover:bg-gray-400 hover:text-black font-[700]">
             Generate Invoice
           </button>
           <button
