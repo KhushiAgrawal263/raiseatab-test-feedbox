@@ -9,9 +9,13 @@ import { useLocation } from "react-router-dom";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
-function InvoicePage() {
+function InvoicePage(props) {
   const location = useLocation();
+  // const { unique } = location.state
   console.log(location);
+
+  // console.log('unique id as props', unique);
+
   const [options, setOptions] = useState(countryList().getData());
   const [value, setValue] = useState("");
 
