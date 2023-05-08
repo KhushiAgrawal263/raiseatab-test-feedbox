@@ -69,7 +69,7 @@ function Register() {
   const changeClientCountry = (countryVal) => {
     setClient_country({ countryVal });
   };
-
+// 
   return (
     <div class="relative min-h-screen flex items-center justify-center bg-center py-0 px-4 sm:px-6 lg:px-8 bg-gray-800 bg-no-repeat bg-cover ">
       <div class="max-w-[45%] w-full space-y-8 p-6 bg-gray-900 rounded-xl shadow-lg z-10 m-5">
