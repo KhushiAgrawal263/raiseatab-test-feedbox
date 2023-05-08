@@ -23,7 +23,7 @@ const TemplateOverview = () => {
       <div class="flex items-center justify-center flex-wrap pt-5">
 
         <card class="m-3 relative h-[20rem] w-[25rem] rounded-lg hover:scale-105 transition-all shadow-md">
-          <Link to='/invoicePage' state={{name:"mentoring"}} onClick={generateUniqueid}>
+          <Link to={'/invoicePage'} state={{name:"mentoring"}} onClick={generateUniqueid}>
           <img alt="" src={template} class="object-cover w-full h-full rounded-lg" />
           <div class="absolute w-full h-full bottom-0 dark:bg-gray-800  opacity-90 rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-white font-bold text-[30px] w-[50%]">Mentoring Invoice</div>

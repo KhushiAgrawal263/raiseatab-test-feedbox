@@ -11,10 +11,7 @@ import { jsPDF } from "jspdf";
 
 function InvoicePage(props) {
   const location = useLocation();
-  // const { unique } = location.state
   console.log(location);
-
-  // console.log('unique id as props', unique);
 
   const [options, setOptions] = useState(countryList().getData());
   const [value, setValue] = useState("");
@@ -59,8 +56,8 @@ function InvoicePage(props) {
   const [items, setItems] = useState([]);
 
   const [greetingName, setGreetingName] = useState(false);
-  const [yourTitle,setYourTitle]=useState(false);
-  const [yourCompany,setYourCompany]=useState(false);
+  const [yourTitle, setYourTitle] = useState(false);
+  const [yourCompany, setYourCompany] = useState(false);
 
   const jwt = localStorage.getItem("invoiceJWT");
   const url = process.env.REACT_APP_URL;
@@ -249,186 +246,201 @@ function InvoicePage(props) {
         {/* left div  */}
         <div className="bg-gray-100 w-[50%]">
           <div className="flex">
-            <div className="flex flex-col p-5 ml-[40px] mt-[30px] gap-3 w-[100%] ">
-              {image ? (
-                <div>
-                  <div
-                    onClick={crossImage}
-                    className="flex text-[20px] text-black  z-50 hover:text-gray-400  cursor-pointer ml-[136px] relative top-[-20px] "
-                  >
-                    <i class="fa-solid fa-circle-xmark"></i>
-                  </div>
-                  <img
-                    className="w-[150px] h-[150px] -mt-[35px] object-cover"
-                    src={file}
-                    alt=""
-                  />
-                </div>
-              ) : (
-                <div className="flex text-sm text-gray-600">
-                  <label
-                    for="file-upload"
-                    className="relative cursor-pointer bg-gray-300 rounded-md font-medium w-[65%] border-dashed border-2 border-gray-400 text-gray-500 "
-                  >
-                    <span className="flex justify-center  p-2 ">Your logo</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      required
-                      onChange={handleChange}
-                      accept="image/png, image/jpeg"
-                      className="sr-only "
+            <div className="flex flex-row p-5 ml-[40px] mt-[30px] gap-3 w-[100%]  ">
+              <div className=" w-[100%]">
+                {image ? (
+                  <div>
+                    <div
+                      onClick={crossImage}
+                      className="flex text-[20px] text-black  z-50 hover:text-gray-400  cursor-pointer ml-[136px] relative top-[-20px] "
+                    >
+                      <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <img
+                      className="w-[150px] h-[150px] -mt-[35px] object-cover"
+                      src={file}
+                      alt=""
                     />
-                  </label>
-                </div>
-              )}
-              <input
-                className="w-[65%] p-1 rounded-md"
-                type="text"
-                // value={user && user.name}
-                // value="fghfvhfa"
-                // value={comp_name}
-                placeholder="Your Company Name"
-                onChange={(e) => setComp_name(e.target.value)}
-              />
+                  </div>
+                ) : (
+                  <div className="flex text-sm text-gray-600">
+                    <label
+                      for="file-upload"
+                      className="relative cursor-pointer bg-gray-300 rounded-md font-medium w-[45%] border-dashed border-2 border-gray-400 text-gray-450 "
+                    >
+                      <span className="flex justify-center  p-2 ">
+                        Your logo
+                      </span>
+                      <input
+                        id="file-upload"
+                        name="file-upload"
+                        type="file"
+                        required
+                        onChange={handleChange}
+                        accept="image/png, image/jpeg"
+                        className="sr-only "
+                      />
+                    </label>
+                  </div>
+                )}
 
-              {location.state && location.state.name === "reference" ? (
-                ""
-              ) : (
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-row justify-between">
                   <input
-                    className="w-[65%] p-1 rounded-md"
+                    className="w-[45%] p-1 rounded-md h-[33px] mt-4"
                     type="text"
-                    // value={compAdd}
-                    placeholder="Company's Address"
-                    onChange={(e) => setComp_add(e.target.value)}
+                    // value={user && user.name}
+                    // value="fghfvhfa"
+                    // value={comp_name}
+                    placeholder="Your Company Name"
+                    onChange={(e) => setComp_name(e.target.value)}
                   />
-                  <input
-                    className="w-[65%] p-1 rounded-md"
-                    type="text"
-                    placeholder="City"
-                    // value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                  />
-                  <input
-                    className="w-[65%] p-1 rounded-md"
-                    type="text"
-                    placeholder="State"
-                    // value={state}
-                    onChange={(e) => setState(e.target.value)}
-                  />
-                  <input
-                    className="w-[65%] p-1 rounded-md"
-                    type="number"
-                    placeholder="ZipCode"
-                    // value={zip}
-                    onChange={(e) => setzip(e.target.value)}
-                  />
-                  <input
-                    className="w-[65%] p-1 rounded-md"
-                    type="number"
-                    placeholder="Contact Number"
-                    // value={contactNo}
-                    onChange={(e) => setContactNo(e.target.value)}
-                  />
-                  <input
-                    className="w-[65%] p-1 rounded-md"
-                    type="email"
-                    placeholder="Company's Email Id"
-                    // value={comp_email}
-                    onChange={(e) => setComp_email(e.target.value)}
-                  />
-                  <div id="countryFlag" className="flex item-center w-[100%]">
-                    <div className="red w-[100%]">
-                      {/* <select
+                  <div className=" text-[35px] font-[600] mr-6">INVOICE</div>
+                </div>
+
+                {location.state && location.state.name === "reference" ? (
+                  ""
+                ) : (
+                  <div className="flex flex-col gap-3 mt-3">
+                    <input
+                      className="w-[45%] p-1 rounded-md"
+                      type="text"
+                      // value={compAdd}
+                      placeholder="Company's Address"
+                      onChange={(e) => setComp_add(e.target.value)}
+                    />
+                    <div className="flex flex-row justify-between ">
+                      <input
+                        className="w-[45%] p-1 rounded-md"
+                        type="text"
+                        placeholder="City"
+                        // value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                      />
+
+                      <input
+                        className="w-[45%] p-1 rounded-md mr-2"
+                        type="text"
+                        placeholder="State"
+                        // value={state}
+                        onChange={(e) => setState(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex flex-row justify-between ">
+                    <div id="countryFlag" className=" flex item-center w-[45%] h-[33px]">
+                      <div className="red w-[100%] h-[33px]">
+                        {/* <select
                         className="w-[65%]"
                         isSearchable={true}
                         options={options}
                         onChange={(e) => setCountry(e.target.value)} */}
-                      <Select
-                        className="w-[65%]"
-                        isSearchable={true}
-                        options={options}
-                        defaultValue={country}
-                        value={user && user.country}
-                        onChange={changeHandler}
-                      />
+                        <Select
+                          className="w-[100%] h-[33px]"
+                          isSearchable={true}
+                          options={options}
+                          defaultValue={country}
+                          value={user && user.country}
+                          onChange={changeHandler}
+                        />
+                      </div>
                     </div>
+
+                    <input
+                      className="w-[45%] p-1 rounded-md mr-2"
+                      type="number"
+                      placeholder="ZipCode"
+                      // value={zip}
+                      onChange={(e) => setzip(e.target.value)}
+                      />
+                      </div>
+
+                      <div className="flex flex-row justify-between">
+                    <input
+                      className="w-[45%] p-1 rounded-md"
+                      type="number"
+                      placeholder="Contact Number"
+                      // value={contactNo}
+                      onChange={(e) => setContactNo(e.target.value)}
+                    />
+                    <input
+                      className="w-[45%] p-1 rounded-md mr-2"
+                      type="email"
+                      placeholder="Company's Email Id"
+                      // value={comp_email}
+                      onChange={(e) => setComp_email(e.target.value)}
+                    />
+                    </div>
+                    
                   </div>
-                </div>
-              )}
-            </div>
-            <div className="pr-[100px]  text-[35px] font-[600] mt-[60px]">
-              INVOICE
+                )}
+              </div>
             </div>
           </div>
           <br />
-          <br />
-          <div className="flex ml-[60px] w-[100%] justify-between">
-            <div className="flex flex-col gap-3 w-[85%] ">
+          <div className="flex ml-[60px] flex-row justify-between">
+            <div className="flex flex-col gap-3 w-[45%]  ">
               <div className="flex gap-1 ">
                 <label className="mt-1">Bill To:</label>
                 <input
                   type="text"
                   placeholder="Client Name"
-                  className="w-[50%] p-1 rounded-md"
+                  className="w-[84%] p-1 rounded-md"
                   onChange={(e) => setClient_name(e.target.value)}
                 />
               </div>
               <input
-                className="w-[68%] p-1 rounded-md"
+                className=" p-1 rounded-md"
                 type="text"
                 placeholder="Client Company Name"
                 onChange={(e) => setClient_comp_name(e.target.value)}
               />
               <input
-                className="w-[68%] p-1 rounded-md"
+                className=" p-1 rounded-md"
                 type="text"
                 placeholder="Client's Address"
                 onChange={(e) => setClient_add(e.target.value)}
               />
               <input
-                className="w-[68%] p-1 rounded-md"
+                className=" p-1 rounded-md"
                 type="text"
                 placeholder="Company's Address"
                 onChange={(e) => setClient_comp_add(e.target.value)}
               />
               <input
-                className="w-[68%] p-1 rounded-md"
+                className=" p-1 rounded-md"
                 type="text"
                 placeholder="City"
                 onChange={(e) => setClient_city(e.target.value)}
               />
               <input
-                className="w-[68%] p-1 rounded-md"
+                className=" p-1 rounded-md"
                 type="text"
                 placeholder="State"
                 onChange={(e) => setClient_state(e.target.value)}
               />
               <input
-                className="w-[68%] p-1 rounded-md"
+                className=" p-1 rounded-md"
                 type="number"
                 placeholder="ZipCode"
                 onChange={(e) => setClient_zip(e.target.value)}
               />
               <input
-                className="w-[68%] p-1 rounded-md"
+                className=" p-1 rounded-md"
                 type="number"
                 placeholder="Contact Number"
                 onChange={(e) => setClient_contact_no(e.target.value)}
               />
               <input
-                className="w-[68%] p-1 rounded-md"
+                className="p-1 rounded-md"
                 type="email"
                 placeholder="Client's Email Id"
                 onChange={(e) => setClient_email(e.target.value)}
               />
 
-              <div id="countryFlag" className="flex item-center w-[105%]">
+              <div id="countryFlag" className="flex item-center w-[100%]">
                 <div className="red w-[100%]">
                   <Select
-                    className="w-[65%]"
+                    className="w-[100%]"
                     isSearchable={true}
                     options={options}
                     //   value={value}
@@ -439,33 +451,33 @@ function InvoicePage(props) {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 w-[100%]">
-              <div className="flex justify-between w-[100%] pr-[120px]">
+            <div className="flex flex-col  w-[45%] gap-3 mr-5">
+              <div className="flex justify-between w-[100%]">
                 <label className="mt-1">Invoice No. :</label>
                 <input
                   type="text"
                   placeholder="#"
-                  className="w-[50%] p-1 rounded-md"
+                  className="w-[70%] p-1 rounded-md"
                   onChange={(e) => setInvoiceNo(e.target.value)}
                 />
               </div>
 
-              <div className="flex justify-between  w-[100%] pr-[120px]">
+              <div className="flex justify-between  w-[100%]">
                 <label className="mt-1">Invoice date:</label>
                 <input
                   type="date"
                   placeholder="Name"
-                  className="w-[50%] p-1 rounded-md"
+                  className="w-[70%] p-1 rounded-md"
                   onChange={(e) => setInvoiceDate(e.target.value)}
                 />
               </div>
 
-              <div className="flex justify-between  w-[100%] pr-[120px]">
+              <div className="flex justify-between  w-[100%] ">
                 <label className="mt-1">Invoice Total:</label>
                 <input
                   type="number"
                   placeholder="Total"
-                  className="w-[50%] p-1 rounded-md"
+                  className="w-[70%] p-1 rounded-md"
                   onChange={(e) => setInvoiceTotal(e.target.value)}
                 />
               </div>
@@ -532,21 +544,27 @@ function InvoicePage(props) {
                         [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="Price"
                         name="price"
-                        onChange={(e) => handleInputChange(rows.id,"price",e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange(rows.id, "price", e.target.value)
+                        }
                       />
                     </td>
                     <td className="p-2">
                       <input
-                      type="number"
-                      placeholder="amount"
-                        
+                        type="number"
+                        placeholder="amount"
                         className="w-[105%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
                         disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
                         focus:bg-gray-200 rounded-sm
                         [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        onChange={(e) => handleInputChange(rows.id,"subamount",e.target.value)}
-                      >
-                      </input>
+                        onChange={(e) =>
+                          handleInputChange(
+                            rows.id,
+                            "subamount",
+                            e.target.value
+                          )
+                        }
+                      ></input>
                     </td>
                     <td>
                       <ImCross
@@ -708,20 +726,20 @@ function InvoicePage(props) {
           </div>
         </div>
 
-
         {/* Right div */}
         <div className="bg-gray-100 w-[50%] h-fit pb-5">
           <div className="flex">
             <div className="flex flex-col p-5 ml-[40px] mt-[30px] gap-3 w-[100%] ">
               <div>
-                {
-                  image?<img
-                  className="w-[150px] h-[150px] -mt-[35px] object-cover"
-                  src={file}
-                  alt=""
-                />:(<div className="mb-3"></div>)
-                }
-                
+                {image ? (
+                  <img
+                    className="w-[150px] h-[150px] -mt-[35px] object-cover"
+                    src={file}
+                    alt=""
+                  />
+                ) : (
+                  <div className="mb-3"></div>
+                )}
               </div>
 
               <div className="flex justify-between w-[100%] ">
@@ -731,44 +749,44 @@ function InvoicePage(props) {
               {location.state && location.state.name === "reference" ? (
                 ""
               ) : (
-              <>
-              <div className="flex justify-between w-[100%] ">
-                <label className="w-[40%]">Address:</label>
-                <div className="w-[80%]  rounded-md">{compAdd}</div>
-              </div>
+                <>
+                  <div className="flex justify-between w-[100%] ">
+                    <label className="w-[40%]">Address:</label>
+                    <div className="w-[80%]  rounded-md">{compAdd}</div>
+                  </div>
 
-              <div className="flex justify-between w-[100%] ">
-                <label className="w-[40%]">City:</label>
-                <div className="w-[80%] rounded-md">{city}</div>
-              </div>
+                  <div className="flex justify-between w-[100%] ">
+                    <label className="w-[40%]">City:</label>
+                    <div className="w-[80%] rounded-md">{city}</div>
+                  </div>
 
-              <div className="flex justify-between w-[100%] ">
-                <label className="w-[40%]">State:</label>
-                <div className="w-[80%]  rounded-md">{state}</div>
-              </div>
+                  <div className="flex justify-between w-[100%] ">
+                    <label className="w-[40%]">State:</label>
+                    <div className="w-[80%]  rounded-md">{state}</div>
+                  </div>
 
-              <div className="flex justify-between w-[100%] ">
-                <label className="w-[40%]">Zip Code:</label>
-                <div className="w-[80%]  rounded-md">{zip}</div>
-              </div>
+                  <div className="flex justify-between w-[100%] ">
+                    <label className="w-[40%]">Zip Code:</label>
+                    <div className="w-[80%]  rounded-md">{zip}</div>
+                  </div>
 
-              <div className="flex justify-between w-[100%] ">
-                <label className="w-[40%]">Number:</label>
-                <div className="w-[80%]  rounded-md">{contactNo}</div>
-              </div>
-              <div className="flex justify-between w-[100%] ">
-                <label className="w-[40%]">Email:</label>
-                <div className="w-[80%] p-1 rounded-md">{comp_email}</div>
-              </div>
+                  <div className="flex justify-between w-[100%] ">
+                    <label className="w-[40%]">Number:</label>
+                    <div className="w-[80%]  rounded-md">{contactNo}</div>
+                  </div>
+                  <div className="flex justify-between w-[100%] ">
+                    <label className="w-[40%]">Email:</label>
+                    <div className="w-[80%] p-1 rounded-md">{comp_email}</div>
+                  </div>
 
-              <div className="flex justify-between w-[100%] ">
-                <label className="w-[40%]">Country:</label>
-                <div className="w-[80%] p-1 rounded-md">{country}</div>
-              </div>
-              </>
-            )}
+                  <div className="flex justify-between w-[100%] ">
+                    <label className="w-[40%]">Country:</label>
+                    <div className="w-[80%] p-1 rounded-md">{country}</div>
+                  </div>
+                </>
+              )}
             </div>
-            
+
             <div className="pr-[50px]  text-[35px] font-[600] mt-[60px]">
               INVOICE
             </div>
@@ -881,8 +899,6 @@ function InvoicePage(props) {
             </table>
           </div>
 
-          
-
           <hr class="w-[88%] mt-4  ml-[60px] h-0.5 bg-gray-100 border-0 border-dashed rounded md:my-10 dark:bg-gray-300"></hr>
           <div className="text-right mr-[45px] text-[16px] flex flex-col gap-2">
             <div>
@@ -967,9 +983,7 @@ function InvoicePage(props) {
             location.state.name === "business" ? (
               <div className="flex gap-1 ">
                 {/* <label className="mt-1">Country:</label> */}
-                <div className="w-[50%] p-1 pb-0 rounded-md">
-                  {yourTitle}
-                </div>
+                <div className="w-[50%] p-1 pb-0 rounded-md">{yourTitle}</div>
               </div>
             ) : (
               ""
@@ -979,16 +993,12 @@ function InvoicePage(props) {
             location.state.name === "generic" ? (
               <div className="flex gap-1 ">
                 {/* <label className="mt-1">Country:</label> */}
-                <div className="w-[50%] p-1 pb-0 rounded-md">
-                  {yourCompany}
-                </div>
+                <div className="w-[50%] p-1 pb-0 rounded-md">{yourCompany}</div>
               </div>
             ) : (
               ""
             )}
           </div>
-
-          
         </div>
       </div>
     </div>
