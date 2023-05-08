@@ -122,7 +122,7 @@ router.post(
 
       const mailOptions = {
         from: "<anushkashah02.feedbox@gmail.com>",
-        to: "<agrawalkhushi95@gmail.com>",
+        to: "<shahanushka67@gmail.com>",
         subject: "My PDF Attachment",
         text: "Please find attached my PDF",
         attachments: [
@@ -149,12 +149,10 @@ router.post(
 
 // Generate invoice and save as draft
 router.post("/set/invoice/draft/:type", verifyToken, async (req, res) => {
-  console.log(req.user);
+  console.log(req.body);
   try {
-    let clone = Object.values(req.body);
-    clone.push(req.user.userId);
-    clone.push("draft");
-    console.log(clone);
+    const {invoice_id,invoiceDate,client_name,client_comp_name,invoiceTotal,client_add,client_comp_add,client_city,client_state,client_zip,client_contactNo,client_email,client_country,subTotal,tax,total,dueDate,yourName}= req.body;
+    const clone = [invoice_id,invoiceDate,invoiceTotal,client_name,client_comp_name,client_add,client_comp_add,client_city,client_state,client_zip,client_contactNo,client_email,client_country,subTotal,tax,total,dueDate,yourName,req.user.userId,"draft"]
     let sqlInsert;
     if (req.params.type === "mentoring") {
       sqlInsert =
@@ -221,7 +219,7 @@ router.post(
 );
 
 // update items on invoice generation
-router.post("/update/items/invoice/", verifyToken, async (req, res) => {
+router.post("/update/items/invoice/:invoiceid", verifyToken, async (req, res) => {
   try {
     console.log(req.body);
     let clone = req.body;
@@ -230,7 +228,7 @@ router.post("/update/items/invoice/", verifyToken, async (req, res) => {
         "INSERT INTO items (name,quantity,rate,amount,user_id,invoice_id) VALUES (?,?,?,?,?,?);";
       db.query(
         userquery,
-        [data.name, data.quantity, data.rate, data.amount, req.user.userId, 12],
+        [data.name, data.quantity, data.rate, data.amount, req.user.userId, req.params.invoiceid],
         (err, result) => {
           if (err) throw err;
           // res.status(200).json(result);
