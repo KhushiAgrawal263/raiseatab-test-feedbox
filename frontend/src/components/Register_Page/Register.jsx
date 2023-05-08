@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import countryList from "react-select-country-list";
 import Select from "react-select";
-
+import userPng from "../assests/user.png";
 function Register() {
   const url = process.env.REACT_APP_URL;
-  const [logo, setLogo] = useState(
-    "https://images.unsplash.com/photo-1611867967135-0faab97d1530?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1352&amp;q=80"
-  );
+  const [logo, setLogo] = useState("");
+  const [logoStatus, setLogoStatus] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,7 +69,7 @@ function Register() {
   const changeClientCountry = (countryVal) => {
     setClient_country({ countryVal });
   };
-
+// 
   return (
     <div class="relative min-h-screen flex items-center justify-center bg-center py-0 px-4 sm:px-6 lg:px-8 bg-gray-800 bg-no-repeat bg-cover ">
       <div class="max-w-[45%] w-full space-y-8 p-6 bg-gray-900 rounded-xl shadow-lg z-10 m-5">
@@ -91,11 +90,19 @@ function Register() {
                   </label>
                   <div class="flex items-center py-3  justify-center">
                     <div class="w-20 h-20 mr-4 flex-none rounded-xl border overflow-hidden">
+                      {logoStatus?
                       <img
-                        class="w-20 h-20 mr-4 object-cover"
+                        class="w-20 h-20 mr-4 object-cover bg-white"
                         src={logo && logo}
                         alt="Avatar Upload"
                       />
+                        :
+                        <img
+                        class="w-20 h-20 mr-4 object-cover bg-white"
+                        src={userPng}
+                        alt="Avatar Upload"
+                      />
+                      }
                     </div>
                     <label class="cursor-pointer ">
                       <span class=" py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded text-sm font-bold text-gray-50 transition duration-200">
@@ -108,7 +115,8 @@ function Register() {
                         multiple="multiple"
                         accept="image/*"
                         onChange={(e) => {
-                          setLogo(e.target.files[0]);
+                          setLogo(URL.createObjectURL(e.target.files[0]));
+                          setLogoStatus(true);
                         }}
                       />
                     </label>
