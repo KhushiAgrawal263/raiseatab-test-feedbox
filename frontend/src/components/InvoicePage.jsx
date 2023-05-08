@@ -5,13 +5,18 @@ import { AiFillPlusCircle } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation,useParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
-function InvoicePage(props) {
+function InvoicePage() {
   const location = useLocation();
   console.log(location);
+  const { id } = useParams();
+
+  const {name}=location.state;
+  console.log(name,id);
+  // console.log('unique id as props', unique);
 
   const [options, setOptions] = useState(countryList().getData());
   const [value, setValue] = useState("");
@@ -148,32 +153,35 @@ function InvoicePage(props) {
     // });
     // const res = await data.json();
 
-    const val = {
-      invoice_id: invoiceNo,
-      invoiceDate: invoiceDate,
-      invoiceTotal: invoiceTotal,
-      client_name: client_name,
-      client_comp_name: client_comp_name,
-      client_add: clientAdd,
-      client_comp_add: client_comp_add,
-      client_city: client_city,
-      client_state: client_state,
-      client_zip: client_zip,
-      client_contactNo: client_contact_no,
-      client_email: client_email,
-      client_country: client_country,
-      subTotal: subTotal,
-      tax: tax,
-      total: total,
-      dueDate: dueDate,
-      yourName: yourName,
-    };
+    let value={};
+    // const val = {
+     if(invoiceNo) value['invoice_id']=invoiceNo;
+     if(invoiceDate) value['invoiceDate']=invoiceDate;
+     if(client_name) value['client_name']=client_name;
+     if(client_comp_name) value['client_comp_name']=client_comp_name;
+     if(invoiceDate) value['invoiceDate']=invoiceDate;
+     if(invoiceTotal) value['invoiceTotal']=invoiceTotal;
+     if(clientAdd) value['client_add']=clientAdd;
+     if(client_comp_add) value['client_comp_add']=client_comp_add;
+     if(client_city) value['client_city']=client_city;
+     if(client_state) value['client_state']=client_state;
+     if(client_zip) value['client_zip']=client_zip;
+     if(client_contact_no) value['client_contactNo']=client_contact_no;
+     if(client_email) value['client_email']=client_email;
+     if(client_country) value['client_country']=client_country;
+     if(subTotal) value['subTotal']=subTotal;
+     if(tax) value['tax']=tax;
+     if(total) value['total']=total;
+     if(dueDate) value['dueDate']=dueDate;
+     if(yourName) value['yourName']=yourName;
+     console.log(value);
+    // };
 
     const newData = await fetch(
       `${url}/set/invoice/draft/${location.state.name}`,
       {
         method: "POST",
-        body: JSON.stringify(val),
+        body: JSON.stringify(value),
         headers: {
           Authorization: `Bearer ${jwt}`,
           "Content-Type": "application/json",
@@ -244,7 +252,7 @@ function InvoicePage(props) {
       </div>
       <div className="flex gap-[80px] ml-[70px] mt-5 mr-[70px]">
         {/* left div  */}
-        <div className="bg-gray-100 w-[50%]">
+        <div id="pdf" className="bg-gray-100 w-[50%]">
           <div className="flex">
             <div className="flex flex-row p-5 ml-[40px] mt-[30px] gap-3 w-[100%]  ">
               <div className=" w-[100%]">
@@ -454,12 +462,7 @@ function InvoicePage(props) {
             <div className="flex flex-col  w-[45%] gap-3 mr-5">
               <div className="flex justify-between w-[100%]">
                 <label className="mt-1">Invoice No. :</label>
-                <input
-                  type="text"
-                  placeholder="#"
-                  className="w-[70%] p-1 rounded-md"
-                  onChange={(e) => setInvoiceNo(e.target.value)}
-                />
+                <div className="w-[70%] p-1 rounded-md">{id}</div>
               </div>
 
               <div className="flex justify-between  w-[100%]">
