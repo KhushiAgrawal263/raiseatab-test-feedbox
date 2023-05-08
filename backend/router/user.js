@@ -10,17 +10,6 @@ const { verifyToken } = require("./requireLogin");
 const upload = multer({});
 const { authenticateGoogle, uploadToGoogleDrive } = require("../driveConfig");
 
-async function generatePdf(component) {
-  const browser = await puppeteer.launch();
-
-  const page = await browser.newPage();
-
-  await page.setContent(component);
-  const pdf = await page.pdf({ format: "A4" });
-  await browser.close();
-  return pdf;
-}
-
 // Register a user
 router.post("/register", upload.single("logo"), async (req, res) => {
   console.log("register");
@@ -71,7 +60,6 @@ router.post("/register", upload.single("logo"), async (req, res) => {
 // Login a user
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
-
   db.query(
     "SELECT * FROM users WHERE email = ?",
     [email],
@@ -110,64 +98,65 @@ router.get("/getUser", verifyToken, async (req, res) => {
   });
 });
 
-const nodemailer = require('nodemailer');
-const fs = require('fs');
+const nodemailer = require("nodemailer");
+const fs = require("fs");
 
-// send mail
-router.post("/sendmail/:id", verifyToken, async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const query = `SELECT * FROM users WHERE user_id = ${userId}`;
-    console.log(req.body);
-    db.query(query, (err, result) => {
-      if (err) throw err;
-      res.status(200).json(result);
-    });
-    // let result = await User.findOne({ _id: req.params.id });
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      port: 465,
-      secure: false,
-      auth: {
-        user: "anushkashah02.feedbox@gmail.com",
-        pass: "dvtjbrrqhgjypuya", // this requires apps password not original password
-      },
-    });
-
-    const pdfFile = fs.readFileSync('my-pdf.pdf');
-
-    const mailOptions = {
-      from: '<anushkashah02.feedbox@gmail.com>',
-      to:  `${result.email}`,
-      subject: 'My PDF Attachment',
-      text: 'Please find attached my PDF',
-      attachments: [
-        {
-          filename: 'my-pdf.pdf',
-          content: pdfFile,
+// Send mail on invoice generation
+router.post(
+  "/sendmail/invoice/client",
+  upload.single("pdf"),
+  verifyToken,
+  async (req, res) => {
+    try {
+      console.log("kjbhg");
+      console.log("skmck", req.body, req.file);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        port: 465,
+        secure: false,
+        auth: {
+          user: "anushkashah02.feedbox@gmail.com",
+          pass: "yceufigcgnnttczm",
         },
-      ],
-    };
+      });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent:', info.res);
+      const mailOptions = {
+        from: "<anushkashah02.feedbox@gmail.com>",
+        to: "<shahanushka67@gmail.com>",
+        subject: "My PDF Attachment",
+        text: "Please find attached my PDF",
+        attachments: [
+          {
+            filename: req.file.originalname,
+            content: req.file.buffer,
+            contentType: "application/pdf",
+          },
+        ],
+      };
 
-  } catch (error) {
-    res.status(500).json(error);
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+    } catch (error) {
+      res.status(500).json(error);
+    }
   }
-});
+);
 
 // Generate invoice and save as draft
 router.post("/set/invoice/draft/:type", verifyToken, async (req, res) => {
+  console.log(req.body);
   try {
-    let clone = Object.values(req.body);
-    clone.push(req.user.userId)
-    clone.push("draft")
-    console.log(clone);
+    const {invoice_id,invoiceDate,client_name,client_comp_name,invoiceTotal,client_add,client_comp_add,client_city,client_state,client_zip,client_contactNo,client_email,client_country,subTotal,tax,total,dueDate,yourName}= req.body;
+    const clone = [invoice_id,invoiceDate,invoiceTotal,client_name,client_comp_name,client_add,client_comp_add,client_city,client_state,client_zip,client_contactNo,client_email,client_country,subTotal,tax,total,dueDate,yourName,req.user.userId,"draft"]
     let sqlInsert;
-    if(req.params.type==="mentoring"){
+    if (req.params.type === "mentoring") {
       sqlInsert =
-      "INSERT INTO invoices (invoice_id,invoice_date,invoice_total,client_name,client_comp_name,client_add,client_comp_add,client_city,client_state,client_zip,client_contactNo,client_email,client_country,subtotal,tax,total,dueDate,user_id,status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+        "INSERT INTO invoices (invoice_id,invoice_date,invoice_total,client_name,client_comp_name,client_add,client_comp_add,client_city,client_state,client_zip,client_contactNo,client_email,client_country,subtotal,tax,total,dueDate,yourName,user_id,status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
     }
     db.query(sqlInsert, clone, (err, result) => {
       if (err) {
@@ -175,7 +164,7 @@ router.post("/set/invoice/draft/:type", verifyToken, async (req, res) => {
         res.status(200).json(err);
       } else {
         console.log("dobe");
-        res.status(200).json(result);
+        res.status(200).json(true);
       }
     });
   } catch (error) {
@@ -190,8 +179,6 @@ router.post(
   verifyToken,
   async (req, res) => {
     try {
-      console.log(req.body, "llll");
-      console.log(req.file, "file");
       if (req.file) {
         const auth = authenticateGoogle();
         const newlogo = await uploadToGoogleDrive(
@@ -225,6 +212,64 @@ router.post(
           res.status(200).json(result);
         });
       }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+);
+
+// update items on invoice generation
+router.post("/update/items/invoice/:invoiceid", verifyToken, async (req, res) => {
+  try {
+    console.log(req.body);
+    let clone = req.body;
+    req.body.map((data) => {
+      const userquery =
+        "INSERT INTO items (name,quantity,rate,amount,user_id,invoice_id) VALUES (?,?,?,?,?,?);";
+      db.query(
+        userquery,
+        [data.name, data.quantity, data.rate, data.amount, req.user.userId, req.params.invoiceid],
+        (err, result) => {
+          if (err) throw err;
+          // res.status(200).json(result);
+          console.log(result);
+        }
+      );
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// svae invoice pdf to backend
+router.post(
+  "/save/invoice/pdf",
+  upload.single("pdf"),
+  verifyToken,
+  async (req, res) => {
+    try {
+      const auth = authenticateGoogle();
+      const response = await uploadToGoogleDrive(
+        req.file,
+        auth,
+        process.env.DRIVE_INVOICE_PDF
+      );
+      console.log(response.data.id);
+
+      const {invoice_id,invoice_date,client_name,client_email}=req.body
+
+      sqlInsert =
+        "INSERT INTO invoices (invoice_id,invoice_date,client_name,client_email,pdf,user_id,status) VALUES (?,?,?,?,?,?,?);";
+
+      db.query(sqlInsert, [invoice_id,invoice_date,client_name,client_email,response.data.id,req.user.userId,"unpaid"], (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(200).json(err);
+        } else {
+          console.log("dobe");
+          res.status(200).json(true);
+        }
+      });
     } catch (error) {
       res.status(500).json(error);
     }
