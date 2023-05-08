@@ -11,11 +11,9 @@ import { jsPDF } from "jspdf";
 
 function InvoicePage() {
   const location = useLocation();
-  console.log(location);
   const [options, setOptions] = useState(countryList().getData());
   const [value, setValue] = useState("");
 
-  console.log(countryList().getData());
   const [imgg, setImgg] = useState();
   const [file, setFile] = useState("");
   const [rows, setRows] = useState([]);
@@ -51,13 +49,14 @@ function InvoicePage() {
   const [yourName, setYourName] = useState("");
 
   const [items, setItems] = useState([]);
+  const [itemObj, setItemObj] = useState({});
 
   const jwt = localStorage.getItem("invoiceJWT");
   const url = process.env.REACT_APP_URL;
 
   useEffect(() => {
     const getUser = async () => {
-      const data = await fetch(`${process.env.REACT_APP_URL}/getUser`, {
+      const data = await fetch(`${url}/getUser`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -100,6 +99,9 @@ function InvoicePage() {
       subamount: 0,
     };
     setRows([...rows, newRow]);
+    if (Object.keys(itemObj).length !== 0) {
+      setItems([...items, itemObj]);
+    }
   };
 
   const handleDeleteRow = (id) => {
@@ -108,7 +110,6 @@ function InvoicePage() {
   };
 
   const handleSaveDraft = async () => {
-    console.log(imgg);
     let formData = new FormData();
     if (imgg) formData.append("logo", imgg);
     if (comp_name) formData.append("companyName", comp_name);
@@ -121,14 +122,14 @@ function InvoicePage() {
     if (contactNo) formData.append("phoneNo", contactNo);
     if (logoId) formData.append("logoId", logoId);
 
-    // const data = await fetch(`${url}/update/user/invoice/${user.user_id}`, {
-    //   method: "POST",
-    //   body: formData,
-    //   headers: {
-    //     Authorization: `Bearer ${jwt}`,
-    //   },
-    // });
-    // const res = await data.json();
+    const data = await fetch(`${url}/update/user/invoice/${user.user_id}`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    const res = await data.json();
 
     const val = {
       invoice_id: invoiceNo,
@@ -151,18 +152,38 @@ function InvoicePage() {
       yourName: yourName,
     };
 
-    const newData = await fetch(
-      `${url}/set/invoice/draft/${location.state.name}`,
-      {
+    // const newData = await fetch(
+    //   `${url}/set/invoice/draft/${location.state.name}`,
+    //   {
+    //     method: "POST",
+    //     body: JSON.stringify(val),
+    //     headers: {
+    //       Authorization: `Bearer ${jwt}`,
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
+    // const newRes = await newData.json();
+    // console.log(newRes);
+
+    const itemarray = items;
+    itemarray.push(itemObj);
+    console.log(itemarray);
+
+    setItemObj("");
+    setItems("");
+
+    if (itemarray.length > 0) {
+      const itemData = await fetch(`${url}/update/items/invoice`, {
         method: "POST",
-        body: JSON.stringify(val),
+        body: JSON.stringify(itemarray),
         headers: {
           Authorization: `Bearer ${jwt}`,
           "Content-Type": "application/json",
         },
-      }
-    );
-    const newRes = await newData.json();
+      });
+      const itemRes = await itemData.json();
+    }
   };
 
   const changeHandler = (e) => {
@@ -173,19 +194,22 @@ function InvoicePage() {
     setClient_country(e.label);
   };
 
-  const handleEmail = async (id, pdf) => {
+  const handleEmail = async (pdf) => {
+    console.log("hii");
     const formData = new FormData();
     formData.append("pdf", pdf);
-    const data = await fetch(`http://localhost:8000/sendmail/${id}`, {
+    const data = await fetch(`http://localhost:8000/sendmail/invoice/client`, {
       method: "POST",
       body: formData,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
     });
-    const res = await data.json();
-    console.log("Mail sent", res);
+    // const res = await data.json();
+    // console.log("Mail sent", res);
   };
 
-  const createPDF = async (id) => {
+  const createPDF = async () => {
     const pdf = new jsPDF("portrait", "pt", "a4");
     const data = await html2canvas(document.querySelector("#pdf"));
     const img = data.toDataURL("image/png");
@@ -193,13 +217,31 @@ function InvoicePage() {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
     pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
-    console.log(data);
-    console.log(pdf);
-    // pdf.save("Invoice.pdf");
-    console.log(pdf.save("Invoice.pdf"));
-    // setPdf(pdf.save("Invoice.pdf"));
-    console.log(pdf);
-    handleEmail(id, pdf);
+    const pdfContent = pdf.output("blob");
+
+    const blob = new Blob([pdfContent], { type: "application/pdf" });
+    const file = new File([blob], `invoice123.pdf`, {
+      type: "application/pdf",
+    });
+
+
+
+    const formData = new FormData();
+    formData.append("invoice_id", invoiceNo);
+    formData.append("invoice_date", invoiceDate);
+    formData.append("client_name", client_name);
+    formData.append("client_email", client_email);
+    formData.append("pdf", file);
+
+    const newdata = await fetch(`http://localhost:8000/save/invoice/pdf`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    // handleEmail(file);
   };
 
   return (
@@ -226,7 +268,7 @@ function InvoicePage() {
       </div>
       <div className="flex gap-[80px] ml-[70px] mt-5 mr-[70px]">
         {/* left div  */}
-        <div className="bg-gray-100 w-[50%]">
+        <div className="bg-gray-100 w-[50%]" id="pdf">
           <div className="flex">
             <div className="flex flex-col p-5 ml-[40px] mt-[30px] gap-3 w-[100%] ">
               {image ? (
@@ -464,6 +506,9 @@ function InvoicePage() {
                     <td className="p-2">
                       <textarea
                         placeholder="Enter Item Name"
+                        onChange={(e) =>
+                          setItemObj({ ...itemObj, name: e.target.value })
+                        }
                         className="w-[140px] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
                                   disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
                                   focus:bg-gray-200 pl-2 rounded-sm"
@@ -472,7 +517,10 @@ function InvoicePage() {
 
                     <td className="p-2">
                       <input
-                        type="number"  onChange={(e)=>{console.log(rows.id);}}
+                        type="number"
+                        onChange={(e) =>
+                          setItemObj({ ...itemObj, quantity: e.target.value })
+                        }
                         className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
                                   disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
                                    focus:bg-gray-200 rounded-sm"
@@ -486,6 +534,9 @@ function InvoicePage() {
                     <td className="p-2">
                       <input
                         type="number"
+                        onChange={(e) =>
+                          setItemObj({ ...itemObj, rate: e.target.value })
+                        }
                         className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
                                   disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
                                   focus:bg-gray-200 rounded-sm
@@ -497,6 +548,9 @@ function InvoicePage() {
                     <td className="p-2">
                       <input
                         type="number"
+                        onChange={(e) =>
+                          setItemObj({ ...itemObj, amount: e.target.value })
+                        }
                         className="w-[45%] bg-transparent focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500
                                   disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
                                   focus:bg-gray-200 rounded-sm
