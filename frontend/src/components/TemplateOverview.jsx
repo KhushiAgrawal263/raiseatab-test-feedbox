@@ -11,7 +11,7 @@ const TemplateOverview = () => {
         <card class="m-3 relative h-[20rem] w-[25rem] rounded-lg hover:scale-105 transition-all shadow-md">
           <Link to='/invoicePage' state={{name:"mentoring"}}>
           <img alt="" src={template} class="object-cover w-full h-full rounded-lg" />
-          <div class="absolute w-full h-full bottom-0 bg-black opacity-60 rounded-lg flex flex-col items-center justify-center text-center">
+          <div class="absolute w-full h-full bottom-0 dark:bg-gray-800  opacity-90 rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-white font-bold text-[30px] w-[50%]">Mentoring Invoice</div>
           </div>
           </Link>
@@ -20,7 +20,7 @@ const TemplateOverview = () => {
         <card class="m-3 relative h-[20rem] w-[25rem] rounded-lg hover:scale-105 transition-all shadow-md">
           <Link to='/invoicePage' state={{name:"generic"}}>
           <img alt="" src={template} class="object-cover w-full h-full rounded-lg" />
-          <div class="absolute w-full h-full bottom-0 bg-black opacity-60 rounded-lg flex flex-col items-center justify-center text-center">
+          <div class="absolute w-full h-full bottom-0 dark:bg-gray-800  opacity-90 rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-white font-bold text-[30px] w-[50%]">Generic Consulting Invoice</div>
           </div>
           </Link>
@@ -29,7 +29,7 @@ const TemplateOverview = () => {
         <card class="m-6 relative  h-[20rem] w-[25rem] rounded-lg hover:scale-105 transition-all  text-gray-900 bg-white  border shadow dark:border-gray-600  dark:bg-gray-800 dark:text-white">
           <Link to='/invoicePage' state={{name:"reference"}}>
           <img alt="" src={template} class="object-cover w-full h-full rounded-lg" />
-          <div class="absolute w-full h-full bottom-0 bg-black opacity-60 rounded-lg flex flex-col items-center justify-center text-center">
+          <div class="absolute w-full h-full bottom-0 dark:bg-gray-800  opacity-90 rounded-lg flex flex-col items-center justify-center text-center">
             <div className="text-white font-bold text-[30px] w-[50%]">Reference Introduction</div>
           </div>
           </Link>
