@@ -22,23 +22,23 @@ function Register() {
   const [pin, setPin] = useState("");
 
   const handleRegister = async () => {
-    // if (
-    //   !name ||
-    //   !email ||
-    //   !password ||
-    //   !companyName ||
-    //   !gstNo ||
-    //   !companyAdd ||
-    //   !logo ||
-    //   !pan ||
-    //   !client_country ||
-    //   !personalAdd ||
-    //   !city ||
-    //   !state ||
-    //   !pin
-    // ) {
-    //   alert("All input fields are required");
-    // } else {
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !companyName ||
+      !gstNo ||
+      !companyAdd ||
+      !logo ||
+      !pan ||
+      !client_country ||
+      !personalAdd ||
+      !city ||
+      !state ||
+      !pin
+    ) {
+      alert("All input fields are required");
+    } else {
       const formData = new FormData();
       formData.append("logo", logo);
       formData.append("name", name);
@@ -48,11 +48,11 @@ function Register() {
       formData.append("panNo", pan);
       formData.append("companyAddress", companyAdd);
       formData.append("companyName", companyName);
-      // formData.append("personalAddress", personalAdd);
-      // formData.append("city", city);
-      // formData.append("state", state);
-      // formData.append("country", client_country);
-      // formData.append("pin", pin);
+      formData.append("personalAddress", personalAdd);
+      formData.append("city", city);
+      formData.append("state", state);
+      formData.append("country", client_country);
+      formData.append("pin", pin);
 
       const data = await fetch(`${url}/register`, {
         method: "POST",
@@ -63,7 +63,7 @@ function Register() {
         alert(res);
         window.location.href = "/login";
       }
-    // }
+    }
   };
 
   const changeClientCountry = (countryVal) => {

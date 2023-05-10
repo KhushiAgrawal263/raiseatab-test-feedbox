@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 
 
 function NavBar() {
-    const jwtData = localStorage.getItem('invoiceJWT');
-
     const logoutHandler = () => {
         localStorage.setItem('invoiceJWT', null);
     }
+
+    const jwtData = localStorage.getItem('invoiceJWT');
 
   return (
     <div>
