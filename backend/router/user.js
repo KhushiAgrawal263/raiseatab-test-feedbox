@@ -13,7 +13,7 @@ const { authenticateGoogle, uploadToGoogleDrive } = require("../driveConfig");
 // Register a user
 router.post("/register", upload.single("logo"), async (req, res) => {
   console.log("register");
-  const { name, email, password, companyAddress, companyName, gstNo, panNo } =
+  const { name, email, password, companyAddress, companyName, gstNo, panNo,logo,personalAddress,city,state, country, pin } =
     req.body;
   console.log(name, req.file);
 
@@ -30,18 +30,25 @@ router.post("/register", upload.single("logo"), async (req, res) => {
 
       // Insert user into database with hashed password
       const sqlInsert =
-        "INSERT INTO users (name,email,password,logo,companyAddress,companyName,gstNo,panNo) VALUES (?,?,?,?,?,?,?,?);";
+        "INSERT INTO users (response.data.id,name,email,hash,logo,companyAddress,companyName,gstNo,panNo,address,city,state,zipcode,phoneNo,country) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
       db.query(
         sqlInsert,
         [
+          response.data.id,
           name,
           email,
           hash,
-          response.data.id,
+          logo,
           companyAddress,
           companyName,
           gstNo,
           panNo,
+          personalAddress,
+          city,
+          state,
+          country,
+          pin
+          
         ],
         (err, result) => {
           if (err) {
