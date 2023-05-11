@@ -13,9 +13,8 @@ function InvoicePage() {
   const location = useLocation();
   console.log(location);
   const { id } = useParams();
-
-  const { name } = location.state;
-  console.log(name, id);
+  const { name,invoiceId } = location.state;
+  console.log(name, id,invoiceId);
   const invoiceNo = id;
 
   const [options, setOptions] = useState(countryList().getData());
@@ -88,7 +87,35 @@ function InvoicePage() {
       setImage(true);
       setLogoId(res[0].logo);
     };
-    getUser();
+
+    const getInvoiceData=async(id)=>{
+      const data = await fetch(`${url}/getInvoiceData/${id}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      const res = await data.json();
+      console.log(res[0]);
+      setUser(res[0]);
+      setFile(`https://drive.google.com/uc?id=${res[0].logo}`);
+      setComp_name(res[0].companyName);
+      setComp_add(res[0].companyAddress);
+      setCity(res[0].city);
+      setState(res[0].state);
+      setzip(res[0].zipcode);
+      setComp_email(res[0].email);
+      setContactNo(res[0].phoneNo);
+      setCountry(res[0].country);
+      setImage(true);
+      setLogoId(res[0].logo);
+    }
+    if(invoiceId){
+      getInvoiceData(invoiceId);
+    }
+    else {
+      getUser();
+    }
+   
   }, []);
 
   function handleChange(e) {
