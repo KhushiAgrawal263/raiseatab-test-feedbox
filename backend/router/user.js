@@ -105,6 +105,16 @@ router.get("/getUser", verifyToken, async (req, res) => {
   });
 });
 
+// Get Logged In user
+router.get("/getInvoiceData/:id", verifyToken, async (req, res) => {
+  const userId = req.user.userId;
+  const query = `SELECT * FROM invoices WHERE invoice_id = ${id} AND user_id=${userId}`;
+
+  db.query(query, (err, result) => {
+    if (err) throw err;
+    res.status(200).json(result);
+  });
+});
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 

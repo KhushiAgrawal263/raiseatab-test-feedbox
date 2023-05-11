@@ -98,7 +98,7 @@ function Draft() {
                                     
                                     <td class="px-4 py-4 text-sm whitespace-nowrap">
                                         <div class="flex items-center gap-x-6">
-                                            <Link to="/temp" class="text-blue-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none">
+                                            <Link to={`/invoicePage/${data.invoice_id}`} state={{invoiceId:data.invoice_id}} class="text-blue-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none">
                                                 Edit
                                             </Link>
                                         </div>
